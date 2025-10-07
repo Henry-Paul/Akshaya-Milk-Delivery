@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MilkFlow - Complete Milk Delivery SaaS</title>
+    <title>Akshaya Milk Delivery - Complete Management System</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <meta name="theme-color" content="#10b981">
+    <meta name="description" content="Complete milk delivery management platform for agencies and customers">
 </head>
 <body>
     <!-- Loading Screen -->
@@ -18,19 +19,137 @@
                 <i class="fas fa-cow"></i>
                 <div class="milk-stream"></div>
             </div>
-            <h2>MilkFlow SaaS</h2>
-            <p>Loading your delivery ecosystem...</p>
+            <h2>Akshaya Milk Delivery</h2>
+            <p>Loading your delivery management system...</p>
         </div>
     </div>
 
-    <!-- Auth Screen -->
+    <!-- Login/Signup Screen -->
     <div id="authScreen" class="auth-screen">
-        <!-- Auth content remains similar but enhanced -->
+        <div class="auth-container">
+            <div class="auth-header">
+                <div class="logo">
+                    <i class="fas fa-cow"></i>
+                    <h1>Akshaya Milk</h1>
+                </div>
+                <p class="tagline">Complete Milk Delivery Management System</p>
+            </div>
+
+            <div class="auth-tabs">
+                <button class="tab-btn active" data-tab="login">Login</button>
+                <button class="tab-btn" data-tab="signup">Sign Up</button>
+            </div>
+
+            <div class="auth-forms">
+                <!-- Login Form -->
+                <form id="loginForm" class="auth-form active">
+                    <div class="form-group">
+                        <label>Email or Phone</label>
+                        <input type="text" id="loginEmail" required placeholder="Enter email or phone number">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="loginPassword" required placeholder="Enter your password">
+                    </div>
+                    <div class="form-options">
+                        <label class="checkbox">
+                            <input type="checkbox" id="rememberMe">
+                            <span class="checkmark"></span>
+                            Remember me
+                        </label>
+                        <a href="#" class="forgot-password">Forgot Password?</a>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-large">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login to Dashboard
+                    </button>
+                    
+                    <!-- Demo Credentials -->
+                    <div class="demo-credentials">
+                        <p><strong>Demo Accounts:</strong></p>
+                        <p>Owner: owner@akshayamilk.com / any password</p>
+                        <p>Agency: agency@akshayamilk.com / any password</p>
+                        <p>Customer: customer@akshayamilk.com / any password</p>
+                    </div>
+                </form>
+
+                <!-- Signup Form -->
+                <form id="signupForm" class="auth-form">
+                    <div class="role-selection">
+                        <h4>Choose Your Role:</h4>
+                        <div class="role-options">
+                            <label class="role-option">
+                                <input type="radio" name="role" value="owner" checked>
+                                <div class="role-card">
+                                    <i class="fas fa-crown"></i>
+                                    <span>Business Owner</span>
+                                </div>
+                            </label>
+                            <label class="role-option">
+                                <input type="radio" name="role" value="agency">
+                                <div class="role-card">
+                                    <i class="fas fa-truck"></i>
+                                    <span>Milk Agency</span>
+                                </div>
+                            </label>
+                            <label class="role-option">
+                                <input type="radio" name="role" value="customer">
+                                <div class="role-card">
+                                    <i class="fas fa-user"></i>
+                                    <span>Customer</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="signupName" required placeholder="Enter your full name">
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="signupEmail" required placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" id="signupPhone" required placeholder="Enter your WhatsApp number">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="signupPassword" required placeholder="Create a strong password">
+                    </div>
+                    <div id="agencyFields" class="hidden">
+                        <div class="form-group">
+                            <label>Agency Name</label>
+                            <input type="text" id="agencyName" placeholder="Enter your agency name">
+                        </div>
+                        <div class="form-group">
+                            <label>Agency Address</label>
+                            <textarea id="agencyAddress" placeholder="Enter your agency address"></textarea>
+                        </div>
+                    </div>
+                    <div id="customerFields" class="hidden">
+                        <div class="form-group">
+                            <label>Delivery Address</label>
+                            <textarea id="customerAddress" placeholder="Enter your delivery address"></textarea>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-large">
+                        <i class="fas fa-user-plus"></i>
+                        Create Account
+                    </button>
+                </form>
+            </div>
+
+            <div class="auth-footer">
+                <p>By continuing, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></p>
+            </div>
+        </div>
     </div>
 
-    <!-- Main App -->
+    <!-- Main Application -->
     <div id="app" class="app-container hidden">
-        <!-- Navigation with Burger Menu -->
+        <!-- Navigation -->
         <nav class="navbar">
             <div class="nav-left">
                 <button class="burger-menu" id="burgerMenu">
@@ -40,7 +159,7 @@
                 </button>
                 <div class="nav-brand">
                     <i class="fas fa-cow"></i>
-                    <span id="brandName">MilkFlow</span>
+                    <span id="brandName">Akshaya Milk</span>
                 </div>
             </div>
             
@@ -54,6 +173,21 @@
                         <span id="userName">User</span>
                         <i class="fas fa-chevron-down"></i>
                     </button>
+                    <div class="user-dropdown hidden" id="userDropdown">
+                        <a href="#" class="dropdown-item" data-action="profile">
+                            <i class="fas fa-user-cog"></i>Profile
+                        </a>
+                        <a href="#" class="dropdown-item" data-action="subscription">
+                            <i class="fas fa-crown"></i>Subscription
+                        </a>
+                        <a href="#" class="dropdown-item" data-action="support">
+                            <i class="fas fa-headset"></i>Support
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item" data-action="logout">
+                            <i class="fas fa-sign-out-alt"></i>Logout
+                        </a>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -70,9 +204,9 @@
                 <!-- Agency Info for Customers -->
                 <div id="agencyInfo" class="agency-info hidden">
                     <div class="agency-header">
-                        <img id="agencyLogo" src="" alt="Agency Logo" class="agency-logo">
+                        <img id="agencyLogo" src="" alt="Agency Logo" class="agency-logo" onerror="this.style.display='none'">
                         <div>
-                            <h4 id="agencyDisplayName">Agency Name</h4>
+                            <h4 id="agencyDisplayName">Akshaya Milk Agency</h4>
                             <span class="rating">
                                 <i class="fas fa-star"></i>
                                 <span id="agencyRating">4.5</span>
@@ -80,14 +214,14 @@
                         </div>
                     </div>
                     <div class="agency-details">
-                        <p><i class="fas fa-map-marker-alt"></i> <span id="agencyLocation">Location</span></p>
+                        <p><i class="fas fa-map-marker-alt"></i> <span id="agencyLocation">Bangalore, Karnataka</span></p>
                         <p><i class="fas fa-clock"></i> <span id="agencyExperience">2+ years</span> experience</p>
                         <p><i class="fas fa-users"></i> <span id="agencyCustomers">150+</span> happy customers</p>
                     </div>
                     <div class="owner-card">
-                        <img id="ownerImage" src="" alt="Owner" class="owner-image">
+                        <img id="ownerImage" src="" alt="Owner" class="owner-image" onerror="this.style.display='none'">
                         <div>
-                            <h5 id="ownerName">Owner Name</h5>
+                            <h5 id="ownerName">Agency Owner</h5>
                             <p>Verified Business</p>
                         </div>
                     </div>
@@ -174,22 +308,122 @@
 
         <!-- Main Content -->
         <main class="main-content">
-            <!-- Customer Dashboard -->
-            <div id="customerDashboard" class="page active">
-                <div class="page-header">
-                    <h1>Welcome to Milk Delivery</h1>
-                    <p>Manage your daily milk subscriptions and orders</p>
+            <!-- Owner Dashboard -->
+            <div id="ownerDashboard" class="dashboard hidden">
+                <div class="dashboard-header">
+                    <h1>Business Owner Dashboard</h1>
+                    <p>Manage your Akshaya Milk platform and track performance</p>
                 </div>
 
-                <!-- Quick Stats -->
+                <!-- Revenue Stats -->
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-icon active">
+                        <div class="stat-icon revenue">
+                            <i class="fas fa-rupee-sign"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>₹<span id="totalRevenue">12,500</span></h3>
+                            <p>Total Revenue</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon agencies">
                             <i class="fas fa-truck"></i>
                         </div>
                         <div class="stat-info">
-                            <h3 id="activeDeliveries">12</h3>
-                            <p>Active Deliveries</p>
+                            <h3 id="totalAgencies">5</h3>
+                            <p>Active Agencies</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon customers">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalCustomers">245</h3>
+                            <p>Total Customers</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon conversion">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="conversionRate">68%</h3>
+                            <p>Trial Conversion</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <h3>Quick Actions</h3>
+                    <div class="action-grid">
+                        <button class="action-btn" onclick="app.showPage('agencies')">
+                            <i class="fas fa-truck"></i>
+                            <span>Manage Agencies</span>
+                        </button>
+                        <button class="action-btn" onclick="app.showPage('revenue')">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>View Reports</span>
+                        </button>
+                        <button class="action-btn" onclick="app.showSubscriptionModal()">
+                            <i class="fas fa-cog"></i>
+                            <span>System Settings</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agency Dashboard -->
+            <div id="agencyDashboard" class="dashboard hidden">
+                <div class="dashboard-header">
+                    <h1>Agency Dashboard</h1>
+                    <div class="trial-countdown" id="trialCountdown">
+                        <i class="fas fa-clock"></i>
+                        <span id="countdownText">5 days trial remaining</span>
+                    </div>
+                </div>
+
+                <!-- Trial Alert -->
+                <div id="trialAlert" class="alert alert-warning hidden">
+                    <div class="alert-content">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div>
+                            <strong>Trial Ending Soon!</strong>
+                            <p>Your free trial ends in <span id="trialDays">2</span> days. Subscribe now to continue uninterrupted service.</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="app.showSubscriptionModal()">Subscribe Now</button>
+                </div>
+
+                <!-- Agency Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon customers">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="agencyCustomers">45</h3>
+                            <p>Total Customers</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon delivery">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="todayDeliveries">38</h3>
+                            <p>Today's Deliveries</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon revenue">
+                            <i class="fas fa-rupee-sign"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>₹<span id="monthlyRevenue">12,500</span></h3>
+                            <p>Monthly Revenue</p>
                         </div>
                     </div>
                     <div class="stat-card">
@@ -197,17 +431,107 @@
                             <i class="fas fa-clock"></i>
                         </div>
                         <div class="stat-info">
-                            <h3>₹<span id="pendingAmount">840</span></h3>
+                            <h3>₹<span id="pendingPayments">3,750</span></h3>
+                            <p>Pending Payments</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <h3>Quick Actions</h3>
+                    <div class="action-grid">
+                        <button class="action-btn" onclick="app.showPage('customers')">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Add Customer</span>
+                        </button>
+                        <button class="action-btn" onclick="app.showPage('customers')">
+                            <i class="fas fa-users"></i>
+                            <span>Manage Customers</span>
+                        </button>
+                        <button class="action-btn" onclick="app.showPage('agency-plans')">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <span>Set Pricing</span>
+                        </button>
+                        <button class="action-btn" onclick="app.showPage('branding')">
+                            <i class="fas fa-palette"></i>
+                            <span>Customize Brand</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="section">
+                    <h2>Recent Activity</h2>
+                    <div class="activity-list">
+                        <div class="activity-item">
+                            <i class="fas fa-user-plus success"></i>
+                            <div class="activity-content">
+                                <p>New customer <strong>Anita Sharma</strong> registered</p>
+                                <span class="activity-time">2 hours ago</span>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <i class="fas fa-rupee-sign warning"></i>
+                            <div class="activity-content">
+                                <p>Payment received from <strong>Suresh Patel</strong></p>
+                                <span class="activity-time">5 hours ago</span>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <i class="fas fa-truck primary"></i>
+                            <div class="activity-content">
+                                <p>Daily deliveries completed for 38 customers</p>
+                                <span class="activity-time">Today</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer Dashboard -->
+            <div id="customerDashboard" class="dashboard hidden">
+                <div class="dashboard-header">
+                    <h1>My Milk Deliveries</h1>
+                    <p>Track your daily milk deliveries and payments</p>
+                </div>
+
+                <!-- Customer Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon delivery">
+                            <i class="fas fa-milk-bottle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="customerDeliveries">28</h3>
+                            <p>This Month</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon amount">
+                            <i class="fas fa-rupee-sign"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>₹<span id="customerAmount">840</span></h3>
+                            <p>Monthly Bill</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon pending">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>₹<span id="customerPending">840</span></h3>
                             <p>Pending Payment</p>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon total">
+                        <div class="stat-icon packets">
                             <i class="fas fa-box"></i>
                         </div>
                         <div class="stat-info">
-                            <h3 id="totalOrders">45</h3>
-                            <p>Total Orders</p>
+                            <h3 id="avgPackets">2</h3>
+                            <p>Avg Packets/Day</p>
                         </div>
                     </div>
                 </div>
@@ -266,10 +590,41 @@
                         </button>
                     </div>
                 </div>
+
+                <!-- Recent Deliveries -->
+                <div class="section">
+                    <h2>Recent Deliveries</h2>
+                    <div class="deliveries-list">
+                        <div class="delivery-item success">
+                            <i class="fas fa-check-circle"></i>
+                            <div class="delivery-content">
+                                <p><strong>2 packets delivered</strong></p>
+                                <span class="delivery-time">Today, 7:30 AM</span>
+                            </div>
+                            <div class="delivery-amount">₹60</div>
+                        </div>
+                        <div class="delivery-item success">
+                            <i class="fas fa-check-circle"></i>
+                            <div class="delivery-content">
+                                <p><strong>2 packets delivered</strong></p>
+                                <span class="delivery-time">Yesterday, 7:25 AM</span>
+                            </div>
+                            <div class="delivery-amount">₹60</div>
+                        </div>
+                        <div class="delivery-item missed">
+                            <i class="fas fa-times-circle"></i>
+                            <div class="delivery-content">
+                                <p><strong>Delivery missed</strong></p>
+                                <span class="delivery-time">Jan 28, 2024</span>
+                            </div>
+                            <div class="delivery-amount">-</div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Customer Orders Page -->
-            <div id="ordersPage" class="page">
+            <div id="ordersPage" class="page hidden">
                 <div class="page-header">
                     <h1>My Orders</h1>
                     <p>Complete order history and delivery tracking</p>
@@ -293,7 +648,7 @@
             </div>
 
             <!-- Plan Selection Page -->
-            <div id="plansPage" class="page">
+            <div id="plansPage" class="page hidden">
                 <div class="page-header">
                     <h1>Choose Your Milk Plan</h1>
                     <p>Select your preferred package and subscription duration</p>
@@ -357,10 +712,10 @@
                 <div class="section">
                     <h2>Plan Start Date</h2>
                     <div class="date-selection">
-                        <input type="date" id="planStartDate" min="" class="date-input">
+                        <input type="date" id="planStartDateInput" min="" class="date-input">
                         <div class="date-options">
-                            <button class="btn btn-outline" onclick="app.setStartDate('today')">Start Today</button>
-                            <button class="btn btn-outline" onclick="app.setStartDate('tomorrow')">Start Tomorrow</button>
+                            <button type="button" class="btn btn-outline" onclick="app.setStartDate('today')">Start Today</button>
+                            <button type="button" class="btn btn-outline" onclick="app.setStartDate('tomorrow')">Start Tomorrow</button>
                         </div>
                     </div>
                 </div>
@@ -393,143 +748,80 @@
                 </div>
             </div>
 
-            <!-- Location Page -->
-            <div id="locationPage" class="page">
-                <div class="page-header">
-                    <h1>Delivery Location</h1>
-                    <p>Set your delivery address and location on map</p>
-                </div>
-
-                <div class="location-container">
-                    <div class="address-section">
-                        <h3>Delivery Address</h3>
-                        <div class="form-group">
-                            <label>Full Address</label>
-                            <textarea id="deliveryAddress" placeholder="Enter your complete delivery address"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>Landmark</label>
-                            <input type="text" id="deliveryLandmark" placeholder="Nearby landmark">
-                        </div>
-                        <div class="form-group">
-                            <label>Instructions</label>
-                            <textarea id="deliveryInstructions" placeholder="Special delivery instructions"></textarea>
-                        </div>
-                    </div>
-
-                    <div class="map-section">
-                        <h3>Location on Map</h3>
-                        <div class="map-container">
-                            <div class="map-placeholder">
-                                <i class="fas fa-map-marked-alt"></i>
-                                <p>Google Maps Integration</p>
-                                <button class="btn btn-outline" onclick="app.openGoogleMaps()">
-                                    <i class="fas fa-external-link-alt"></i>
-                                    Open in Google Maps
-                                </button>
-                            </div>
-                        </div>
-                        <div class="location-coordinates">
-                            <div class="coordinate">
-                                <span>Latitude:</span>
-                                <span id="locationLat">12.9716</span>
-                            </div>
-                            <div class="coordinate">
-                                <span>Longitude:</span>
-                                <span id="locationLng">77.5946</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="location-actions">
-                    <button class="btn btn-primary" onclick="app.saveLocation()">
-                        <i class="fas fa-save"></i>
-                        Save Location
-                    </button>
-                    <button class="btn btn-outline" onclick="app.useCurrentLocation()">
-                        <i class="fas fa-location-arrow"></i>
-                        Use Current Location
-                    </button>
-                </div>
-            </div>
-
-            <!-- Agency Dashboard -->
-            <div id="agencyDashboard" class="page">
-                <!-- Enhanced agency dashboard with all features -->
-            </div>
-
-            <!-- Agency Branding Page -->
-            <div id="brandingPage" class="page">
-                <div class="page-header">
-                    <h1>Brand Customization</h1>
-                    <p>Customize how your customers see your business</p>
-                </div>
-
-                <div class="branding-container">
-                    <div class="brand-preview">
-                        <h3>Live Preview</h3>
-                        <div class="preview-window">
-                            <div class="preview-header" id="previewHeader">
-                                <i class="fas fa-cow" id="previewIcon"></i>
-                                <span id="previewBrandName">Your Business</span>
-                            </div>
-                            <div class="preview-content">
-                                <div class="preview-card">
-                                    <h4 id="previewBusinessName">Your Business Name</h4>
-                                    <p>Milk Delivery Service</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="brand-settings">
-                        <div class="setting-group">
-                            <label>Business Name</label>
-                            <input type="text" id="businessName" placeholder="Enter your business name" oninput="app.updateBrandPreview()">
-                        </div>
-
-                        <div class="setting-group">
-                            <label>Primary Color</label>
-                            <div class="color-picker">
-                                <input type="color" id="primaryColor" value="#10b981" onchange="app.updateBrandPreview()">
-                                <span id="colorValue">#10b981</span>
-                            </div>
-                        </div>
-
-                        <div class="setting-group">
-                            <label>Upload Logo</label>
-                            <div class="logo-upload">
-                                <input type="file" id="logoUpload" accept="image/*" onchange="app.handleLogoUpload(event)">
-                                <label for="logoUpload" class="upload-btn">
-                                    <i class="fas fa-cloud-upload-alt"></i>
-                                    Choose Logo
-                                </label>
-                                <div id="logoPreview" class="logo-preview"></div>
-                            </div>
-                        </div>
-
-                        <div class="setting-group">
-                            <label>Business Description</label>
-                            <textarea id="businessDescription" placeholder="Describe your business" oninput="app.updateBrandPreview()"></textarea>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="branding-actions">
-                    <button class="btn btn-primary" onclick="app.saveBrandSettings()">
-                        <i class="fas fa-save"></i>
-                        Save Brand Settings
-                    </button>
-                    <button class="btn btn-outline" onclick="app.resetBrandSettings()">
-                        <i class="fas fa-undo"></i>
-                        Reset to Default
-                    </button>
-                </div>
-            </div>
-
-            <!-- More pages for Products, Agency Plans, etc. -->
+            <!-- More pages can be added here for other functionalities -->
         </main>
+    </div>
+
+    <!-- Subscription Modal -->
+    <div id="subscriptionModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Choose Your Plan</h2>
+                <button class="close-btn" onclick="app.closeSubscriptionModal()">&times;</button>
+            </div>
+            <div class="plans-grid">
+                <div class="plan-card">
+                    <div class="plan-header">
+                        <h3>Monthly</h3>
+                        <div class="price">₹2,000<span>/month</span></div>
+                    </div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> Unlimited Customers</li>
+                        <li><i class="fas fa-check"></i> Delivery Tracking</li>
+                        <li><i class="fas fa-check"></i> Payment Management</li>
+                        <li><i class="fas fa-check"></i> Basic Reports</li>
+                    </ul>
+                    <button class="btn btn-outline" onclick="app.selectPlan('monthly')">Choose Plan</button>
+                </div>
+
+                <div class="plan-card popular">
+                    <div class="plan-badge">Most Popular</div>
+                    <div class="plan-header">
+                        <h3>3 Months</h3>
+                        <div class="price">₹5,800<span>/3 months</span></div>
+                        <div class="discount">Save 3.3%</div>
+                    </div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> Everything in Monthly</li>
+                        <li><i class="fas fa-check"></i> Advanced Analytics</li>
+                        <li><i class="fas fa-check"></i> WhatsApp Automation</li>
+                        <li><i class="fas fa-check"></i> Priority Support</li>
+                    </ul>
+                    <button class="btn btn-primary" onclick="app.selectPlan('quarterly')">Choose Plan</button>
+                </div>
+
+                <div class="plan-card">
+                    <div class="plan-header">
+                        <h3>6 Months</h3>
+                        <div class="price">₹11,000<span>/6 months</span></div>
+                        <div class="discount">Save 8.3%</div>
+                    </div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> Everything in 3 Months</li>
+                        <li><i class="fas fa-check"></i> Custom Reports</li>
+                        <li><i class="fas fa-check"></i> API Access</li>
+                        <li><i class="fas fa-check"></i> Dedicated Manager</li>
+                    </ul>
+                    <button class="btn btn-outline" onclick="app.selectPlan('semiannual')">Choose Plan</button>
+                </div>
+
+                <div class="plan-card best-value">
+                    <div class="plan-badge">Best Value</div>
+                    <div class="plan-header">
+                        <h3>Annual</h3>
+                        <div class="price">₹19,500<span>/year</span></div>
+                        <div class="discount">Save 18.75%</div>
+                    </div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> Everything in 6 Months</li>
+                        <li><i class="fas fa-check"></i> White Label Option</li>
+                        <li><i class="fas fa-check"></i> Advanced Automation</li>
+                        <li><i class="fas fa-check"></i> 24/7 Phone Support</li>
+                    </ul>
+                    <button class="btn btn-primary" onclick="app.selectPlan('annual')">Choose Plan</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Vini Solutions Modal -->
@@ -585,7 +877,8 @@
         </div>
     </div>
 
-    <!-- All other modals (Payment, Subscription, etc.) -->
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="toast-container"></div>
 
     <script src="app.js"></script>
 </body>
