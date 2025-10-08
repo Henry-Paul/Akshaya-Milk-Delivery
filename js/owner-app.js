@@ -10,12 +10,15 @@ class OwnerApp {
     }
 
     initialize() {
+        console.log('💼 Initializing Owner App');
+        
         this.loadSampleData();
         this.renderOwnerApp();
     }
 
     renderOwnerApp() {
         const appContainer = document.getElementById('ownerApp');
+        
         appContainer.innerHTML = `
             <div class="owner-app">
                 <div class="owner-layout">
@@ -27,31 +30,26 @@ class OwnerApp {
                             </div>
                         </div>
                         <nav class="sidebar-nav">
-                            <a class="sidebar-nav-item ${this.state.currentSection === 'dashboard' ? 'active' : ''}" 
+                            <button class="sidebar-nav-item ${this.state.currentSection === 'dashboard' ? 'active' : ''}" 
                                onclick="ownerApp.showSection('dashboard')">
                                 <span class="material-icons">dashboard</span>
                                 Dashboard
-                            </a>
-                            <a class="sidebar-nav-item ${this.state.currentSection === 'agencies' ? 'active' : ''}" 
+                            </button>
+                            <button class="sidebar-nav-item ${this.state.currentSection === 'agencies' ? 'active' : ''}" 
                                onclick="ownerApp.showSection('agencies')">
                                 <span class="material-icons">local_shipping</span>
                                 Agencies
-                            </a>
-                            <a class="sidebar-nav-item ${this.state.currentSection === 'products' ? 'active' : ''}" 
+                            </button>
+                            <button class="sidebar-nav-item ${this.state.currentSection === 'products' ? 'active' : ''}" 
                                onclick="ownerApp.showSection('products')">
                                 <span class="material-icons">inventory</span>
                                 Products
-                            </a>
-                            <a class="sidebar-nav-item ${this.state.currentSection === 'customers' ? 'active' : ''}" 
+                            </button>
+                            <button class="sidebar-nav-item ${this.state.currentSection === 'customers' ? 'active' : ''}" 
                                onclick="ownerApp.showSection('customers')">
                                 <span class="material-icons">people</span>
                                 Customers
-                            </a>
-                            <a class="sidebar-nav-item ${this.state.currentSection === 'analytics' ? 'active' : ''}" 
-                               onclick="ownerApp.showSection('analytics')">
-                                <span class="material-icons">analytics</span>
-                                Analytics
-                            </a>
+                            </button>
                         </nav>
                     </aside>
 
@@ -60,7 +58,6 @@ class OwnerApp {
                         ${this.state.currentSection === 'agencies' ? this.renderAgencies() : ''}
                         ${this.state.currentSection === 'products' ? this.renderProducts() : ''}
                         ${this.state.currentSection === 'customers' ? this.renderCustomers() : ''}
-                        ${this.state.currentSection === 'analytics' ? this.renderAnalytics() : ''}
                     </main>
                 </div>
             </div>
@@ -91,27 +88,12 @@ class OwnerApp {
                     </div>
                 </div>
 
-                <div class="charts-grid">
-                    <div class="chart-card">
-                        <h3>Revenue Trend</h3>
-                        <div class="chart-placeholder">
-                            <p>Revenue chart would be displayed here</p>
-                        </div>
-                    </div>
-                    <div class="chart-card">
-                        <h3>Top Products</h3>
-                        <div class="chart-placeholder">
-                            <p>Product performance chart would be displayed here</p>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="management-section">
                     <h3>Recent Activity</h3>
                     <div class="activity-list">
-                        <p>New order from Customer #1234 - ₹250</p>
-                        <p>Agency Bangalore South updated their stock</p>
-                        <p>New customer registered - Total: ${this.state.stats.customers}</p>
+                        <p>✅ New order from Customer #1234 - ₹250</p>
+                        <p>✅ Agency Bangalore South updated their stock</p>
+                        <p>✅ New customer registered - Total: ${this.state.stats.customers}</p>
                     </div>
                 </div>
             </div>
@@ -132,14 +114,11 @@ class OwnerApp {
                             <p><strong>Performance:</strong> ${agency.performance}%</p>
                             <div class="action-buttons">
                                 <button class="btn-primary" onclick="ownerApp.editAgency(${agency.id})">Edit</button>
-                                <button class="btn-secondary" onclick="ownerApp.viewAgencyDetails(${agency.id})">Details</button>
+                                <button class="btn-primary" onclick="ownerApp.viewAgencyDetails(${agency.id})">Details</button>
                             </div>
                         </div>
                     `).join('')}
                 </div>
-                <button class="btn-primary" style="margin-top: 20px;">
-                    + Add New Agency
-                </button>
             </div>
         `;
     }
@@ -157,14 +136,10 @@ class OwnerApp {
                             <p><strong>Status:</strong> ${product.active ? 'Active' : 'Inactive'}</p>
                             <div class="action-buttons">
                                 <button class="btn-primary" onclick="ownerApp.editProduct(${product.id})">Edit</button>
-                                <button class="btn-secondary" onclick="ownerApp.viewProductAnalytics(${product.id})">Analytics</button>
                             </div>
                         </div>
                     `).join('')}
                 </div>
-                <button class="btn-primary" style="margin-top: 20px;">
-                    + Add New Product
-                </button>
             </div>
         `;
     }
@@ -173,23 +148,12 @@ class OwnerApp {
         return `
             <div class="management-section">
                 <h2 class="section-title">Customer Management</h2>
-                <p>Customer management interface would be displayed here.</p>
                 <div class="empty-state">
                     <span class="material-icons">people</span>
-                    <p>Customer management features</p>
-                </div>
-            </div>
-        `;
-    }
-
-    renderAnalytics() {
-        return `
-            <div class="management-section">
-                <h2 class="section-title">Business Analytics</h2>
-                <p>Detailed analytics and reports would be displayed here.</p>
-                <div class="empty-state">
-                    <span class="material-icons">analytics</span>
-                    <p>Advanced analytics dashboard</p>
+                    <h3>Customer Analytics</h3>
+                    <p>Total Customers: ${this.state.stats.customers}</p>
+                    <p>Active Subscriptions: 847</p>
+                    <p>New This Month: 45</p>
                 </div>
             </div>
         `;
@@ -246,24 +210,52 @@ class OwnerApp {
     }
 
     editAgency(agencyId) {
-        alert(`Editing agency #${agencyId}`);
+        this.showNotification(`✏️ Editing agency #${agencyId}`);
     }
 
     viewAgencyDetails(agencyId) {
-        alert(`Viewing details for agency #${agencyId}`);
+        this.showNotification(`📊 Viewing details for agency #${agencyId}`);
     }
 
     editProduct(productId) {
-        alert(`Editing product #${productId}`);
+        this.showNotification(`✏️ Editing product #${productId}`);
     }
 
-    viewProductAnalytics(productId) {
-        alert(`Viewing analytics for product #${productId}`);
+    showNotification(message) {
+        // Create a simple notification
+        const notification = document.createElement('div');
+        notification.textContent = message;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #7ED321;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            z-index: 1000;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        `;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            if (document.body.contains(notification)) {
+                document.body.removeChild(notification);
+            }
+        }, 3000);
     }
 }
 
 // Initialize owner app
 const ownerApp = new OwnerApp();
+
 function initializeOwnerApp() {
+    console.log('💼 Initializing Owner App');
     ownerApp.initialize();
 }
+
+// Make globally available
+window.ownerApp = ownerApp;
+window.initializeOwnerApp = initializeOwnerApp;
