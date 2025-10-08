@@ -1,39 +1,85 @@
 // App Selector Functionality
 function switchApp(appType) {
-    // Hide all apps and show app selector
-    document.getElementById('appSelector').style.display = 'none';
-    document.getElementById('backToSelector').style.display = 'flex';
+    console.log('Switching to app:', appType);
+    
+    // Hide app selector
+    const appSelector = document.getElementById('appSelector');
+    if (appSelector) {
+        appSelector.style.display = 'none';
+    }
+    
+    // Show back button
+    const backButton = document.getElementById('backToSelector');
+    if (backButton) {
+        backButton.style.display = 'flex';
+    }
     
     // Hide all apps
-    document.querySelectorAll('.app-container').forEach(app => {
+    const appContainers = document.querySelectorAll('.app-container');
+    appContainers.forEach(app => {
         app.style.display = 'none';
+        app.innerHTML = ''; // Clear previous content
     });
     
     // Show selected app
     const selectedApp = document.getElementById(appType + 'App');
     if (selectedApp) {
         selectedApp.style.display = 'block';
-        selectedApp.classList.add(appType + '-app');
         
         // Initialize the selected app
         switch(appType) {
             case 'customer':
-                initializeCustomerApp();
+                if (typeof initializeCustomerApp === 'function') {
+                    initializeCustomerApp();
+                } else {
+                    console.error('initializeCustomerApp function not found');
+                }
                 break;
             case 'agency':
-                initializeAgencyApp();
+                if (typeof initializeAgencyApp === 'function') {
+                    initializeAgencyApp();
+                } else {
+                    console.error('initializeAgencyApp function not found');
+                }
                 break;
             case 'owner':
-                initializeOwnerApp();
+                if (typeof initializeOwnerApp === 'function') {
+                    initializeOwnerApp();
+                } else {
+                    console.error('initializeOwnerApp function not found');
+                }
                 break;
+            default:
+                console.error('Unknown app type:', appType);
         }
+    } else {
+        console.error('App container not found for:', appType);
     }
 }
 
 function showAppSelector() {
-    document.getElementById('appSelector').style.display = 'flex';
-    document.getElementById('backToSelector').style.display = 'none';
-    document.querySelectorAll('.app-container').forEach(app => {
+    console.log('Showing app selector');
+    
+    // Show app selector
+    const appSelector = document.getElementById('appSelector');
+    if (appSelector) {
+        appSelector.style.display = 'flex';
+    }
+    
+    // Hide back button
+    const backButton = document.getElementById('backToSelector');
+    if (backButton) {
+        backButton.style.display = 'none';
+    }
+    
+    // Hide all apps
+    const appContainers = document.querySelectorAll('.app-container');
+    appContainers.forEach(app => {
         app.style.display = 'none';
+        app.innerHTML = ''; // Clear content
     });
 }
+
+// Make functions globally available
+window.switchApp = switchApp;
+window.showAppSelector = showAppSelector;
