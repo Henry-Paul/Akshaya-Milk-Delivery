@@ -1,16 +1,16 @@
-const CACHE_NAME = 'akshaya-milk-v4';
+const CACHE_NAME = 'akshaya-milk-v1';
 const urlsToCache = [
   '/',
   '/index.html',
   '/style.css',
-  '/js/app-selector.js',
+  '/js/main.js',
   '/js/customer-app.js',
   '/js/agency-app.js',
   '/js/owner-app.js',
-  '/js/main.js',
   '/manifest.json'
 ];
 
+// Install event
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -20,11 +20,28 @@ self.addEventListener('install', (event) => {
   );
 });
 
+// Fetch event
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
+        // Return cached version or fetch from network
         return response || fetch(event.request);
       })
+  );
+});
+
+// Activate event
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          if (cacheName !== CACHE_NAME) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
   );
 });
