@@ -1,17 +1,49 @@
-# Akshaya Milk Delivery (PWA demo)
+# Akshaya Milk Delivery PWA
 
-**Akshaya Milk Delivery** is a client-only Progressive Web App (PWA) demo implementing a 3-tier milk-delivery SaaS (Owner / Agency / Customer) using **pure HTML/CSS/JS** and `localStorage`. This repository is intended as a functional prototype to be extended with a backend for production.
+A modern Progressive Web App for milk delivery with Swiggy-style UI.
 
 ## Features
-- Owner / Agency / Customer portals (role-based)
-- Local-storage based multi-tenant data
-- Delivery calendar (mark deliveries ✓)
-- 5-day agency trial simulation with wa.me links
-- Mock payment flow (records payments in `localStorage`)
-- Agency brand customization (color, logo, name)
-- PWA manifest & service worker for offline
-- Placeholder Google Maps integration (requires API key)
-- GitHub Actions workflow to publish to GitHub Pages
 
-## Live demo
-After deploying to GitHub Pages the URL will be:
+- 🥛 Fresh milk and dairy products catalog
+- 🛒 Easy shopping cart functionality
+- 📱 Responsive mobile-first design
+- 🔄 PWA capabilities (offline support, installable)
+- 💰 Real-time price calculation
+- 🔍 Search and filter products
+- 📦 Order management
+
+## Deployment on GitHub Pages
+
+1. **Create a new repository** on GitHub
+2. **Upload all files** to the repository:
+   - `index.html`
+   - `style.css`
+   - `app.js`
+   - `sw.js`
+   - `manifest.json`
+   - `sample-data.json`
+   - `README.md`
+
+3. **Enable GitHub Pages**:
+   - Go to repository Settings
+   - Scroll to "Pages" section
+   - Select "Deploy from branch"
+   - Choose "main" branch and "/ (root)" folder
+   - Click "Save"
+
+4. **Your app will be live at**:  
+   `https://[your-username].github.io/[repository-name]`
+
+## Local Development
+
+1. Clone the repository
+2. Serve the files using a local server:
+   ```bash
+   # Using Python
+   python -m http.server 8000
+   
+   # Using Node.js
+   npx serve .
+   
+   # Using PHP
+   php -S localhost:8000
