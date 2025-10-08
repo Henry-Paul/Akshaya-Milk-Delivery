@@ -1,86 +1,80 @@
 {
+  "appInfo": {
+    "name": "Akshaya Milk Delivery",
+    "version": "3.0.0",
+    "description": "Modern PWA for milk delivery with Swiggy-style UI"
+  },
   "products": [
     {
       "id": 1,
       "name": "Fresh Cow Milk",
-      "description": "Pure and fresh cow milk, pasteurized",
+      "description": "Pure and fresh cow milk, pasteurized for safety",
       "icon": "🥛",
-      "price": 60,
+      "price": 30,
+      "originalPrice": 35,
       "unit": "litre",
       "category": "milk",
-      "inStock": true
+      "rating": 4.8,
+      "ratingCount": 1247,
+      "popular": true,
+      "features": ["Pasteurized", "Fresh Daily", "Rich in Calcium"]
     },
     {
       "id": 2,
       "name": "Buffalo Milk",
-      "description": "Rich and creamy buffalo milk",
+      "description": "Rich and creamy buffalo milk with high fat content",
       "icon": "🐃",
-      "price": 70,
-      "unit": "litre",
-      "category": "milk",
-      "inStock": true
-    },
-    {
-      "id": 3,
-      "name": "Standardized Milk",
-      "description": "Milk with standardized fat content",
-      "icon": "📊",
-      "price": 55,
-      "unit": "litre",
-      "category": "milk",
-      "inStock": true
-    },
-    {
-      "id": 4,
-      "name": "Fresh Curd",
-      "description": "Homemade style fresh curd",
-      "icon": "🍶",
       "price": 40,
-      "unit": "500g",
-      "category": "curd",
-      "inStock": true
-    },
-    {
-      "id": 5,
-      "name": "Fresh Paneer",
-      "description": "Soft and fresh cottage cheese",
-      "icon": "🧀",
-      "price": 200,
-      "unit": "kg",
-      "category": "paneer",
-      "inStock": true
-    },
-    {
-      "id": 6,
-      "name": "Pure Ghee",
-      "description": "Traditional clarified butter",
-      "icon": "🫕",
-      "price": 500,
-      "unit": "500g",
-      "category": "ghee",
-      "inStock": true
+      "originalPrice": 45,
+      "unit": "litre",
+      "category": "milk",
+      "rating": 4.6,
+      "ratingCount": 892,
+      "features": ["High Fat", "Creamy", "Nutrient Rich"]
     }
   ],
   "categories": [
     {
       "id": "milk",
       "name": "Milk",
-      "description": "Various types of fresh milk"
+      "description": "Various types of fresh milk",
+      "icon": "🥛"
     },
     {
       "id": "curd",
       "name": "Curd",
-      "description": "Fresh dairy curd products"
+      "description": "Fresh dairy curd products",
+      "icon": "🍶"
+    }
+  ],
+  "subscriptionPlans": [
+    {
+      "id": "weekly",
+      "name": "Weekly Plan",
+      "price": 210,
+      "period": "week",
+      "features": ["7 days delivery", "Free delivery", "Flexible timings"],
+      "popular": true
     },
     {
-      "id": "paneer",
-      "name": "Paneer",
-      "description": "Fresh cottage cheese"
+      "id": "monthly",
+      "name": "Monthly Plan",
+      "price": 780,
+      "period": "month",
+      "features": ["30 days delivery", "Free delivery", "Priority support"]
+    }
+  ],
+  "deliverySlots": [
+    {
+      "id": "morning",
+      "name": "Morning",
+      "time": "6:00 - 8:00 AM",
+      "popular": true
     },
     {
-      "id": "ghee",
-      "name": "Ghee",
-      "description": "Pure clarified butter"
+      "id": "evening",
+      "name": "Evening",
+      "time": "5:00 - 7:00 PM"
     }
   ]
 }
