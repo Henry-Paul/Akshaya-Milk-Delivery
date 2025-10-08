@@ -1,135 +1,181 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Akshaya Milk Delivery — PWA</title>
-  <link rel="manifest" href="/manifest.json">
-  <link rel="icon" href="/icons/icon-192.png" />
-  <meta name="theme-color" content="#1976d2">
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akshaya Milk Delivery</title>
+    <meta name="description" content="Fresh milk delivery at your doorstep">
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥛</text></svg>">
+    <meta name="theme-color" content="#FD9139">
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <img id="brandLogo" src="icons/icon-192.png" alt="Akshaya logo" />
-      <h1 id="brandTitle">Akshaya Milk Delivery</h1>
+    <!-- App Container -->
+    <div id="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <span class="logo-icon">🥛</span>
+                        <span class="logo-text">Akshaya Milk</span>
+                    </div>
+                    <div class="header-actions">
+                        <button class="icon-btn" id="searchBtn">
+                            <span>🔍</span>
+                        </button>
+                        <button class="icon-btn" id="cartBtn">
+                            <span>🛒</span>
+                            <span class="badge" id="cartCount">0</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Search Bar -->
+        <div class="search-section" id="searchSection">
+            <div class="container">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search milk, curd, paneer...">
+                    <button class="filter-btn" id="filterBtn">Filter</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main">
+            <div class="container">
+                <!-- Hero Banner -->
+                <section class="hero-banner">
+                    <div class="hero-content">
+                        <h1>Fresh Milk Delivered Daily</h1>
+                        <p>Get your daily dose of freshness with Akshaya Milk</p>
+                        <button class="cta-button" id="exploreBtn">Explore Products</button>
+                    </div>
+                </section>
+
+                <!-- Categories -->
+                <section class="categories">
+                    <h2 class="section-title">Categories</h2>
+                    <div class="categories-grid">
+                        <div class="category-card" data-category="milk">
+                            <div class="category-icon">🥛</div>
+                            <span>Milk</span>
+                        </div>
+                        <div class="category-card" data-category="curd">
+                            <div class="category-icon">🍶</div>
+                            <span>Curd</span>
+                        </div>
+                        <div class="category-card" data-category="paneer">
+                            <div class="category-icon">🧀</div>
+                            <span>Paneer</span>
+                        </div>
+                        <div class="category-card" data-category="ghee">
+                            <div class="category-icon">🫕</div>
+                            <span>Ghee</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Products Grid -->
+                <section class="products">
+                    <h2 class="section-title">Popular Products</h2>
+                    <div class="products-grid" id="productsGrid">
+                        <!-- Products will be loaded dynamically -->
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <a href="#home" class="nav-item active" data-page="home">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">Home</span>
+            </a>
+            <a href="#orders" class="nav-item" data-page="orders">
+                <span class="nav-icon">📦</span>
+                <span class="nav-label">Orders</span>
+            </a>
+            <a href="#subscriptions" class="nav-item" data-page="subscriptions">
+                <span class="nav-icon">🔄</span>
+                <span class="nav-label">Subscriptions</span>
+            </a>
+            <a href="#profile" class="nav-item" data-page="profile">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">Profile</span>
+            </a>
+        </nav>
+
+        <!-- Cart Sidebar -->
+        <div class="cart-sidebar" id="cartSidebar">
+            <div class="cart-header">
+                <h3>Your Cart</h3>
+                <button class="close-btn" id="closeCart">✕</button>
+            </div>
+            <div class="cart-items" id="cartItems">
+                <!-- Cart items will be loaded here -->
+            </div>
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <span>Total: ₹<span id="cartTotal">0</span></span>
+                </div>
+                <button class="checkout-btn" id="checkoutBtn">Proceed to Checkout</button>
+            </div>
+        </div>
+
+        <!-- Product Modal -->
+        <div class="modal" id="productModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modalProductName">Product Name</h3>
+                    <button class="close-btn" id="closeModal">✕</button>
+                </div>
+                <div class="modal-body">
+                    <div class="product-detail">
+                        <div class="product-image-large">
+                            <span id="modalProductIcon">🥛</span>
+                        </div>
+                        <div class="product-info">
+                            <p id="modalProductDesc">Product description</p>
+                            <div class="price-section">
+                                <span class="price" id="modalProductPrice">₹0</span>
+                                <span class="unit" id="modalProductUnit">/litre</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="quantity-selector">
+                        <label>Quantity:</label>
+                        <div class="quantity-controls">
+                            <button class="qty-btn" id="decreaseQty">-</button>
+                            <span class="qty-value" id="currentQty">1</span>
+                            <button class="qty-btn" id="increaseQty">+</button>
+                        </div>
+                    </div>
+                    <div class="subscription-options">
+                        <label>Delivery Schedule:</label>
+                        <select id="deliverySchedule">
+                            <option value="once">One-time delivery</option>
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="add-to-cart-btn" id="addToCartModal">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Offline Indicator -->
+        <div class="offline-indicator" id="offlineIndicator">
+            <span>⚠️ You are currently offline</span>
+        </div>
     </div>
-    <nav>
-      <label for="roleSelect" class="sr-only">Role</label>
-      <select id="roleSelect" aria-label="Select role">
-        <option value="owner">Owner</option>
-        <option value="agency">Agency</option>
-        <option value="customer">Customer</option>
-      </select>
-      <button id="btnLoginDemo">Login (Demo)</button>
-      <a id="repoLink" href="#" target="_blank" rel="noopener">Repo</a>
-    </nav>
-  </header>
 
-  <main id="app">
-    <!-- Login / Session info -->
-    <section id="loginSection" class="card">
-      <h2>Quick Demo Login</h2>
-      <form id="loginForm">
-        <label>Email <input id="email" type="email" required></label>
-        <label>Password <input id="password" type="password" required></label>
-        <button type="submit">Sign in</button>
-      </form>
-      <p class="muted">Or use <strong>Login (Demo)</strong> to auto-fill demo creds.</p>
-    </section>
-
-    <!-- Owner portal -->
-    <section id="ownerPortal" class="portal hidden">
-      <h2>Owner Portal</h2>
-      <div class="row">
-        <div class="card w-40" id="ownerStats">
-          <h3>Revenue</h3>
-          <div id="ownerRevenue">₹0</div>
-          <h4>Subscriptions</h4>
-          <div id="ownerSubs"></div>
-        </div>
-
-        <div class="card w-60" id="ownerAgencies">
-          <h3>Agencies</h3>
-          <div id="agencyList"></div>
-        </div>
-      </div>
-      <div class="card">
-        <h3>Platform Analytics</h3>
-        <pre id="ownerAnalytics"></pre>
-      </div>
-    </section>
-
-    <!-- Agency portal -->
-    <section id="agencyPortal" class="portal hidden">
-      <h2>Agency Portal</h2>
-      <div class="row">
-        <div class="card w-30" id="agencyPanel">
-          <h3>Brand</h3>
-          <form id="brandForm">
-            <label>Business name <input id="businessName"></label>
-            <label>Brand color <input id="brandColor" type="color"></label>
-            <label>Logo URL <input id="logoUrl" placeholder="https://..."></label>
-            <button id="saveBrand" type="button">Save Brand</button>
-          </form>
-
-          <h4>Subscription</h4>
-          <div id="trialBadge"></div>
-        </div>
-
-        <div class="card w-70" id="agencyCustomers">
-          <h3>Customers</h3>
-          <button id="btnAddCustomer">Add Customer</button>
-          <div id="customersList"></div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>Delivery Calendar</h3>
-        <div id="deliveryCalendar"></div>
-      </div>
-    </section>
-
-    <!-- Customer portal -->
-    <section id="customerPortal" class="portal hidden">
-      <h2>Customer Portal</h2>
-      <div class="card">
-        <h3>My Subscription</h3>
-        <div id="customerSub"></div>
-        <button id="btnPlaceOrder">Place / Pay (Mock)</button>
-      </div>
-
-      <div class="card">
-        <h3>Delivery History</h3>
-        <div id="customerHistory"></div>
-      </div>
-
-      <div class="card">
-        <h3>Map</h3>
-        <div id="mapContainer" class="map"></div>
-        <div id="mapFallback" class="muted"></div>
-      </div>
-    </section>
-
-    <!-- Modals -->
-    <div id="modal" class="modal hidden" role="dialog" aria-modal="true">
-      <div class="modal-content">
-        <button id="modalClose" class="close">✕</button>
-        <div id="modalBody"></div>
-      </div>
-    </div>
-
-    <footer class="footer">
-      <small>Built as a static PWA demo. <a href="https://github.com/your-username/Akshaya-Milk-Delivery" id="repoLink2" target="_blank">View repo</a></small>
-    </footer>
-  </main>
-
-  <script src="app.js" defer></script>
-  <script>
-    // set repo link placeholders
-    document.getElementById('repoLink').href = 'https://github.com/<your-username>/Akshaya-Milk-Delivery';
-    document.getElementById('repoLink2').href = 'https://github.com/<your-username>/Akshaya-Milk-Delivery';
-  </script>
+    <script src="app.js"></script>
 </body>
 </html>
