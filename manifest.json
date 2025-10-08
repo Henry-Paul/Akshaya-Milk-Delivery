@@ -1,16 +1,24 @@
 {
   "name": "Akshaya Milk Delivery",
   "short_name": "Akshaya Milk",
-  "description": "Complete milk delivery management system",
+  "description": "Fresh milk and dairy products delivered to your doorstep",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#FFFFFF",
   "theme_color": "#FC8019",
+  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥛</text></svg>",
       "sizes": "192x192",
       "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥛</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
     }
-  ]
+  ],
+  "categories": ["food", "shopping"],
+  "lang": "en-US"
 }
