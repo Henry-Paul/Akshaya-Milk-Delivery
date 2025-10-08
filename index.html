@@ -8,11 +8,23 @@
     <link rel="manifest" href="manifest.json">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥛</text></svg>">
     <meta name="theme-color" content="#FC8019">
 </head>
 <body>
-    <!-- App Selector Screen -->
-    <div id="appSelector" class="app-selector">
+    <!-- Splash Screen -->
+    <div id="splashScreen" class="splash-screen">
+        <div class="splash-content">
+            <div class="milk-animation">
+                <div class="milk-bottle">🥛</div>
+            </div>
+            <h1 class="brand-logo">Akshaya Milk</h1>
+            <p class="tagline">Fresh Milk, Happy Homes</p>
+        </div>
+    </div>
+
+    <!-- App Selector -->
+    <div id="appSelector" class="app-selector" style="display: none;">
         <div class="selector-container">
             <div class="logo-section">
                 <div class="logo">🥛</div>
@@ -21,7 +33,7 @@
             </div>
             
             <div class="app-cards">
-                <div class="app-card customer-app" onclick="switchApp('customer')">
+                <div class="app-card customer-app" data-app="customer">
                     <div class="app-icon">👨‍👩‍👧‍👦</div>
                     <h3>Customer App</h3>
                     <p>Order fresh milk & dairy products</p>
@@ -32,7 +44,7 @@
                     </div>
                 </div>
 
-                <div class="app-card agency-app" onclick="switchApp('agency')">
+                <div class="app-card agency-app" data-app="agency">
                     <div class="app-icon">🚚</div>
                     <h3>Agency App</h3>
                     <p>Manage deliveries & local operations</p>
@@ -43,7 +55,7 @@
                     </div>
                 </div>
 
-                <div class="app-card owner-app" onclick="switchApp('owner')">
+                <div class="app-card owner-app" data-app="owner">
                     <div class="app-icon">💼</div>
                     <h3>Owner Dashboard</h3>
                     <p>Business analytics & management</p>
@@ -58,30 +70,24 @@
     </div>
 
     <!-- Customer App -->
-    <div id="customerApp" class="app-container" style="display: none;">
-        <!-- Customer app content will be loaded here -->
-    </div>
+    <div id="customerApp" class="app-container" style="display: none;"></div>
 
     <!-- Agency App -->
-    <div id="agencyApp" class="app-container" style="display: none;">
-        <!-- Agency app content will be loaded here -->
-    </div>
+    <div id="agencyApp" class="app-container" style="display: none;"></div>
 
     <!-- Owner App -->
-    <div id="ownerApp" class="app-container" style="display: none;">
-        <!-- Owner app content will be loaded here -->
-    </div>
+    <div id="ownerApp" class="app-container" style="display: none;"></div>
 
-    <!-- Back to App Selector Button -->
-    <button id="backToSelector" class="back-to-selector" onclick="showAppSelector()">
+    <!-- Back to Selector Button -->
+    <button id="backToSelector" class="back-to-selector" style="display: none;">
         <span class="material-icons">apps</span>
         Switch App
     </button>
 
+    <script src="js/main.js"></script>
     <script src="js/app-selector.js"></script>
     <script src="js/customer-app.js"></script>
     <script src="js/agency-app.js"></script>
     <script src="js/owner-app.js"></script>
-    <script src="js/main.js"></script>
 </body>
 </html>
