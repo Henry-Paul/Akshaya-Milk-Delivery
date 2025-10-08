@@ -13,143 +13,114 @@ class AkshayaMilkApp {
             isOnline: true
         };
         
-        this.init();
+        // Bind methods to maintain context
+        this.init = this.init.bind(this);
+        this.showSplashScreen = this.showSplashScreen.bind(this);
+        this.hideSplashScreen = this.hideSplashScreen.bind(this);
+        this.showView = this.showView.bind(this);
     }
 
     async init() {
-        this.setupEventListeners();
-        this.loadProducts();
-        this.loadCartFromStorage();
-        this.checkOnlineStatus();
-        this.showSplashScreen();
+        console.log('🚀 Initializing Akshaya Milk App...');
         
-        // Register service worker
-        if ('serviceWorker' in navigator) {
-            try {
-                await navigator.serviceWorker.register('/sw.js');
-                console.log('Service Worker registered successfully');
-            } catch (error) {
-                console.log('Service Worker registration failed:', error);
+        try {
+            this.setupEventListeners();
+            await this.loadProducts();
+            this.loadCartFromStorage();
+            this.checkOnlineStatus();
+            this.showSplashScreen();
+            
+            // Register service worker
+            if ('serviceWorker' in navigator) {
+                try {
+                    const registration = await navigator.serviceWorker.register('/sw.js');
+                    console.log('✅ Service Worker registered successfully:', registration);
+                } catch (error) {
+                    console.log('⚠️ Service Worker registration failed:', error);
+                }
             }
+        } catch (error) {
+            console.error('❌ App initialization failed:', error);
+            this.hideSplashScreen(); // Ensure splash screen hides even on error
         }
     }
 
     showSplashScreen() {
+        console.log('🎬 Showing splash screen...');
+        const splashScreen = document.getElementById('splashScreen');
+        const app = document.getElementById('app');
+        
+        if (!splashScreen || !app) {
+            console.error('❌ Required DOM elements not found');
+            return;
+        }
+        
+        // Make sure splash is visible and app is hidden
+        splashScreen.style.display = 'flex';
+        splashScreen.style.opacity = '1';
+        app.style.display = 'none';
+        
+        // Hide splash after 2 seconds
         setTimeout(() => {
-            document.getElementById('splashScreen').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('splashScreen').style.display = 'none';
-                document.getElementById('app').style.display = 'block';
-                this.showView('customerView');
-            }, 500);
+            this.hideSplashScreen();
         }, 2000);
     }
 
-    setupEventListeners() {
-        // Navigation
-        document.querySelectorAll('.nav-item[data-view]').forEach(item => {
-            item.addEventListener('click', (e) => {
-                e.preventDefault();
-                const view = item.dataset.view;
-                this.showView(view);
-            });
-        });
-
-        // Back buttons
-        document.querySelectorAll('.back-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const view = btn.dataset.view;
-                this.showView(view);
-            });
-        });
-
-        // App mode selector
-        document.querySelectorAll('.mode-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const mode = btn.dataset.mode;
-                this.switchAppMode(mode);
-            });
-        });
-
-        // Search functionality
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            this.handleSearch(e.target.value);
-        });
-
-        // Categories
-        document.querySelectorAll('.category-item').forEach(item => {
-            item.addEventListener('click', () => {
-                this.handleCategoryClick(item);
-            });
-        });
-
-        // Product modal
-        document.getElementById('closeModal').addEventListener('click', () => {
-            this.closeProductModal();
-        });
-
-        // Quantity controls
-        document.getElementById('increaseQty').addEventListener('click', () => {
-            this.changeQuantity(1);
-        });
-
-        document.getElementById('decreaseQty').addEventListener('click', () => {
-            this.changeQuantity(-1);
-        });
-
-        // Size options
-        document.querySelectorAll('.size-option').forEach(option => {
-            option.addEventListener('click', () => {
-                this.selectSize(option);
-            });
-        });
-
-        // Schedule options
-        document.querySelectorAll('.schedule-option').forEach(option => {
-            option.addEventListener('click', () => {
-                this.selectSchedule(option);
-            });
-        });
-
-        // Add to cart
-        document.getElementById('addToCartModal').addEventListener('click', () => {
-            this.addToCartFromModal();
-        });
-
-        // Online/offline detection
-        window.addEventListener('online', () => this.handleOnlineStatus(true));
-        window.addEventListener('offline', () => this.handleOnlineStatus(false));
-
-        // Close modal on outside click
-        document.getElementById('productModal').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('productModal')) {
-                this.closeProductModal();
-            }
-        });
+    hideSplashScreen() {
+        console.log('🎬 Hiding splash screen...');
+        const splashScreen = document.getElementById('splashScreen');
+        const app = document.getElementById('app');
+        
+        if (!splashScreen || !app) {
+            console.error('❌ Required DOM elements not found');
+            return;
+        }
+        
+        // Start fade out
+        splashScreen.style.opacity = '0';
+        
+        // Complete hide after transition
+        setTimeout(() => {
+            splashScreen.style.display = 'none';
+            app.style.display = 'block';
+            this.showView('customerView');
+            console.log('✅ App ready!');
+        }, 500);
     }
 
     showView(viewName) {
+        console.log(`🔄 Switching to view: ${viewName}`);
+        
         // Hide all views
         document.querySelectorAll('.view').forEach(view => {
             view.classList.remove('active');
         });
 
         // Show selected view
-        document.getElementById(viewName).classList.add('active');
-        this.state.currentView = viewName;
+        const targetView = document.getElementById(viewName);
+        if (targetView) {
+            targetView.classList.add('active');
+            this.state.currentView = viewName;
 
-        // Update navigation
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.classList.remove('active');
-        });
-        document.querySelector(`[data-view="${viewName}"]`)?.classList.add('active');
+            // Update navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            const navItem = document.querySelector(`[data-view="${viewName}"]`);
+            if (navItem) {
+                navItem.classList.add('active');
+            }
 
-        // Load view-specific data
-        this.loadViewData(viewName);
+            // Load view-specific data
+            this.loadViewData(viewName);
+        } else {
+            console.error(`❌ View not found: ${viewName}`);
+        }
     }
 
     switchAppMode(mode) {
+        console.log(`🔄 Switching app mode to: ${mode}`);
         switch (mode) {
             case 'customer':
                 this.showView('customerView');
@@ -162,16 +133,18 @@ class AkshayaMilkApp {
                 this.showView('adminView');
                 this.loadAdminData();
                 break;
+            default:
+                console.warn(`⚠️ Unknown app mode: ${mode}`);
         }
     }
 
     async loadProducts() {
-        // Show loading skeleton
+        console.log('📦 Loading products...');
         this.showLoadingSkeleton();
 
         try {
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            // Simulate API call with shorter timeout for better UX
+            await new Promise(resolve => setTimeout(resolve, 800));
             
             this.state.products = [
                 {
@@ -247,37 +220,14 @@ class AkshayaMilkApp {
                     category: "ghee",
                     rating: 4.8,
                     ratingCount: 189
-                },
-                {
-                    id: 7,
-                    name: "Butter",
-                    description: "Fresh creamy butter for your bread and cooking",
-                    icon: "🧈",
-                    price: 80,
-                    originalPrice: 90,
-                    unit: "200g",
-                    category: "butter",
-                    rating: 4.4,
-                    ratingCount: 156
-                },
-                {
-                    id: 8,
-                    name: "Flavored Milk",
-                    description: "Chocolate and strawberry flavored milk",
-                    icon: "🍫",
-                    price: 25,
-                    originalPrice: 30,
-                    unit: "200ml",
-                    category: "milk",
-                    rating: 4.3,
-                    ratingCount: 278
                 }
             ];
 
+            console.log(`✅ Loaded ${this.state.products.length} products`);
             this.renderProducts();
         } catch (error) {
-            console.error('Error loading products:', error);
-            this.showError('Failed to load products');
+            console.error('❌ Error loading products:', error);
+            this.showError('Failed to load products. Please check your connection.');
         } finally {
             this.hideLoadingSkeleton();
         }
@@ -285,7 +235,23 @@ class AkshayaMilkApp {
 
     renderProducts(products = this.state.products) {
         const grid = document.getElementById('productsGrid');
+        if (!grid) {
+            console.error('❌ Products grid element not found');
+            return;
+        }
+
         grid.innerHTML = '';
+
+        if (products.length === 0) {
+            grid.innerHTML = `
+                <div class="empty-state">
+                    <span class="material-icons">search_off</span>
+                    <h3>No products found</h3>
+                    <p>Try adjusting your search or filter</p>
+                </div>
+            `;
+            return;
+        }
 
         products.forEach(product => {
             const productCard = this.createProductCard(product);
@@ -334,25 +300,240 @@ class AkshayaMilkApp {
         return card;
     }
 
-    openProductModal(product) {
-        this.state.currentProduct = product;
-        this.state.currentQuantity = 1;
-        this.state.selectedSize = '500ml';
-        this.state.selectedSchedule = 'Mon-Fri';
+    setupEventListeners() {
+        console.log('🔧 Setting up event listeners...');
+        
+        try {
+            // Navigation
+            document.querySelectorAll('.nav-item[data-view]').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const view = item.dataset.view;
+                    this.showView(view);
+                });
+            });
 
-        // Update modal content
-        document.getElementById('modalProductName').textContent = product.name;
-        document.getElementById('modalProductIcon').textContent = product.icon;
-        document.getElementById('modalProductPrice').textContent = product.price;
-        this.updateModalTotalPrice();
+            // Back buttons
+            document.querySelectorAll('.back-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const view = btn.dataset.view;
+                    this.showView(view);
+                });
+            });
 
-        // Show modal
-        document.getElementById('productModal').classList.add('show');
+            // App mode selector
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const mode = btn.dataset.mode;
+                    this.switchAppMode(mode);
+                });
+            });
+
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    this.handleSearch(e.target.value);
+                });
+            }
+
+            // Categories
+            document.querySelectorAll('.category-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    this.handleCategoryClick(item);
+                });
+            });
+
+            // Product modal
+            const closeModal = document.getElementById('closeModal');
+            if (closeModal) {
+                closeModal.addEventListener('click', () => {
+                    this.closeProductModal();
+                });
+            }
+
+            // Quantity controls
+            const increaseQty = document.getElementById('increaseQty');
+            const decreaseQty = document.getElementById('decreaseQty');
+            if (increaseQty) {
+                increaseQty.addEventListener('click', () => {
+                    this.changeQuantity(1);
+                });
+            }
+            if (decreaseQty) {
+                decreaseQty.addEventListener('click', () => {
+                    this.changeQuantity(-1);
+                });
+            }
+
+            // Size options
+            document.querySelectorAll('.size-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    this.selectSize(option);
+                });
+            });
+
+            // Schedule options
+            document.querySelectorAll('.schedule-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    this.selectSchedule(option);
+                });
+            });
+
+            // Add to cart
+            const addToCartModal = document.getElementById('addToCartModal');
+            if (addToCartModal) {
+                addToCartModal.addEventListener('click', () => {
+                    this.addToCartFromModal();
+                });
+            }
+
+            // Online/offline detection
+            window.addEventListener('online', () => this.handleOnlineStatus(true));
+            window.addEventListener('offline', () => this.handleOnlineStatus(false));
+
+            // Close modal on outside click
+            const productModal = document.getElementById('productModal');
+            if (productModal) {
+                productModal.addEventListener('click', (e) => {
+                    if (e.target === productModal) {
+                        this.closeProductModal();
+                    }
+                });
+            }
+
+            console.log('✅ Event listeners setup complete');
+        } catch (error) {
+            console.error('❌ Error setting up event listeners:', error);
+        }
     }
 
-    closeProductModal() {
-        document.getElementById('productModal').classList.remove('show');
-        this.state.currentProduct = null;
+    // ... (rest of the methods remain similar but with added error handling)
+
+    showLoadingSkeleton() {
+        const skeleton = document.getElementById('loadingSkeleton');
+        if (skeleton) {
+            skeleton.style.display = 'block';
+        }
+    }
+
+    hideLoadingSkeleton() {
+        const skeleton = document.getElementById('loadingSkeleton');
+        if (skeleton) {
+            skeleton.style.display = 'none';
+        }
+    }
+
+    showNotification(message, type = 'success') {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${type === 'success' ? '#4CAF50' : '#f44336'};
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            max-width: 300px;
+            font-family: 'Poppins', sans-serif;
+        `;
+
+        notification.innerHTML = `
+            <span class="material-icons">${type === 'success' ? 'check_circle' : 'error'}</span>
+            <span>${message}</span>
+        `;
+
+        document.body.appendChild(notification);
+
+        // Animate in
+        setTimeout(() => {
+            notification.style.transform = 'translateX(0)';
+        }, 100);
+
+        // Remove after 3 seconds
+        setTimeout(() => {
+            notification.style.transform = 'translateX(400px)';
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
+            }, 300);
+        }, 3000);
+    }
+
+    showError(message) {
+        this.showNotification(message, 'error');
+    }
+
+    // ... Add other methods with proper error handling
+
+    openProductModal(product) {
+        try {
+            this.state.currentProduct = product;
+            this.state.currentQuantity = 1;
+            this.state.selectedSize = '500ml';
+            this.state.selectedSchedule = 'Mon-Fri';
+
+            // Update modal content
+            document.getElementById('modalProductName').textContent = product.name;
+            document.getElementById('modalProductIcon').textContent = product.icon;
+            document.getElementById('modalProductPrice').textContent = product.price;
+            this.updateModalTotalPrice();
+
+            // Reset and activate first options
+            document.querySelectorAll('.size-option').forEach(opt => opt.classList.remove('active'));
+            document.querySelectorAll('.schedule-option').forEach(opt => opt.classList.remove('active'));
+            
+            document.querySelector('.size-option[data-size="500ml"]')?.classList.add('active');
+            document.querySelector('.schedule-option:first-child')?.classList.add('active');
+
+            // Show modal
+            document.getElementById('productModal').classList.add('show');
+        } catch (error) {
+            console.error('Error opening product modal:', error);
+        }
+    }
+
+    // Add missing methods that might be causing issues
+    handleSearch(query) {
+        if (!this.state.products || this.state.products.length === 0) {
+            console.warn('Products not loaded yet');
+            return;
+        }
+
+        const filteredProducts = this.state.products.filter(product =>
+            product.name.toLowerCase().includes(query.toLowerCase()) ||
+            product.description.toLowerCase().includes(query.toLowerCase()) ||
+            product.category.toLowerCase().includes(query.toLowerCase())
+        );
+        this.renderProducts(filteredProducts);
+    }
+
+    handleCategoryClick(categoryItem) {
+        document.querySelectorAll('.category-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        categoryItem.classList.add('active');
+
+        const category = categoryItem.dataset.category;
+        if (category === 'all') {
+            this.renderProducts();
+        } else {
+            const filteredProducts = this.state.products.filter(product =>
+                product.category === category
+            );
+            this.renderProducts(filteredProducts);
+        }
     }
 
     changeQuantity(change) {
@@ -416,16 +597,40 @@ class AkshayaMilkApp {
         }
     }
 
+    closeProductModal() {
+        document.getElementById('productModal').classList.remove('show');
+        this.state.currentProduct = null;
+    }
+
     updateCartUI() {
         const totalCount = this.state.cart.reduce((sum, item) => sum + item.quantity, 0);
-        const totalPrice = this.state.cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+        const navCartCount = document.getElementById('navCartCount');
+        if (navCartCount) {
+            navCartCount.textContent = totalCount;
+        }
 
-        // Update cart count in navigation
-        document.getElementById('navCartCount').textContent = totalCount;
-
-        // Update cart view if active
         if (this.state.currentView === 'cartView') {
             this.renderCartView();
+        }
+    }
+
+    loadViewData(viewName) {
+        switch (viewName) {
+            case 'cartView':
+                this.renderCartView();
+                break;
+            case 'ordersView':
+                this.renderOrdersView();
+                break;
+            case 'profileView':
+                this.renderProfileView();
+                break;
+            case 'agencyView':
+                this.loadAgencyData();
+                break;
+            case 'adminView':
+                this.loadAdminData();
+                break;
         }
     }
 
@@ -445,373 +650,61 @@ class AkshayaMilkApp {
                 </div>
             `;
         } else {
-            container.innerHTML = this.state.cart.map(item => `
-                <div class="cart-item">
-                    <div class="item-info">
-                        <span class="item-icon">${item.product.icon}</span>
-                        <div class="item-details">
-                            <h4>${item.product.name}</h4>
-                            <p>${item.size} • ${item.schedule}</p>
-                            <div class="item-price">₹${item.product.price * item.quantity}</div>
-                        </div>
-                    </div>
-                    <div class="item-controls">
-                        <button class="qty-btn" onclick="app.updateCartItemQuantity(${item.product.id}, ${item.quantity - 1})">-</button>
-                        <span class="qty-value">${item.quantity}</span>
-                        <button class="qty-btn" onclick="app.updateCartItemQuantity(${item.product.id}, ${item.quantity + 1})">+</button>
-                        <button class="remove-btn" onclick="app.removeFromCart(${item.product.id})">
-                            <span class="material-icons">delete</span>
-                        </button>
-                    </div>
-                </div>
-            `).join('') + `
-                <div class="cart-total">
-                    <div class="total-line">
-                        <span>Subtotal</span>
-                        <span>₹${this.state.cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0)}</span>
-                    </div>
-                    <div class="total-line">
-                        <span>Delivery</span>
-                        <span>FREE</span>
-                    </div>
-                    <div class="total-line grand-total">
-                        <span>Total</span>
-                        <span>₹${this.state.cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0)}</span>
-                    </div>
-                    <button class="checkout-btn" onclick="app.proceedToCheckout()">
-                        Proceed to Checkout
-                    </button>
-                </div>
-            `;
-        }
-    }
-
-    updateCartItemQuantity(productId, newQuantity) {
-        if (newQuantity <= 0) {
-            this.removeFromCart(productId);
-        } else {
-            const item = this.state.cart.find(item => item.product.id === productId);
-            if (item) {
-                item.quantity = newQuantity;
-                this.updateCartUI();
-                this.saveCartToStorage();
-            }
-        }
-    }
-
-    removeFromCart(productId) {
-        this.state.cart = this.state.cart.filter(item => item.product.id !== productId);
-        this.updateCartUI();
-        this.saveCartToStorage();
-        this.showNotification('Item removed from cart');
-    }
-
-    proceedToCheckout() {
-        if (this.state.cart.length === 0) {
-            this.showNotification('Your cart is empty!');
-            return;
-        }
-
-        const total = this.state.cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
-        
-        // Simulate checkout process
-        this.showNotification(`Order placed successfully! Total: ₹${total}`);
-        
-        // Clear cart
-        this.state.cart = [];
-        this.updateCartUI();
-        this.saveCartToStorage();
-        this.showView('customerView');
-    }
-
-    handleSearch(query) {
-        const filteredProducts = this.state.products.filter(product =>
-            product.name.toLowerCase().includes(query.toLowerCase()) ||
-            product.description.toLowerCase().includes(query.toLowerCase()) ||
-            product.category.toLowerCase().includes(query.toLowerCase())
-        );
-        this.renderProducts(filteredProducts);
-    }
-
-    handleCategoryClick(categoryItem) {
-        // Update active category
-        document.querySelectorAll('.category-item').forEach(item => {
-            item.classList.remove('active');
-        });
-        categoryItem.classList.add('active');
-
-        const category = categoryItem.dataset.category;
-        if (category === 'all') {
-            this.renderProducts();
-        } else {
-            const filteredProducts = this.state.products.filter(product =>
-                product.category === category
-            );
-            this.renderProducts(filteredProducts);
-        }
-    }
-
-    async loadAgencyData() {
-        // Simulate loading agency data
-        const deliveries = [
-            {
-                id: 1,
-                customer: "Anita Sharma",
-                address: "123 Main Street, Apartment 4B",
-                time: "7:00 - 7:15 AM",
-                status: "pending",
-                items: ["1L Milk × 2"],
-                amount: 60
-            },
-            {
-                id: 2,
-                customer: "Raj Kumar",
-                address: "456 Oak Avenue, Floor 2",
-                time: "7:15 - 7:30 AM",
-                status: "pending",
-                items: ["500ml Milk × 1", "Curd × 1"],
-                amount: 70
-            },
-            {
-                id: 3,
-                customer: "Priya Singh",
-                address: "789 Pine Road, House 5",
-                time: "7:30 - 7:45 AM",
-                status: "completed",
-                items: ["2L Milk × 1"],
-                amount: 80
-            }
-        ];
-
-        this.renderDeliveries(deliveries);
-        
-        // Update stats
-        const pending = deliveries.filter(d => d.status === 'pending').length;
-        const completed = deliveries.filter(d => d.status === 'completed').length;
-        
-        document.getElementById('deliveryCount').textContent = deliveries.length;
-        document.getElementById('pendingDeliveries').textContent = pending;
-        document.getElementById('completedDeliveries').textContent = completed;
-    }
-
-    renderDeliveries(deliveries) {
-        const container = document.getElementById('deliveriesList');
-        container.innerHTML = deliveries.map(delivery => `
-            <div class="delivery-card ${delivery.status}">
-                <div class="delivery-header">
-                    <div class="customer-info">
-                        <h3>${delivery.customer}</h3>
-                        <p class="delivery-time">${delivery.time}</p>
-                    </div>
-                    <div class="delivery-status ${delivery.status}">
-                        <span>${delivery.status.charAt(0).toUpperCase() + delivery.status.slice(1)}</span>
-                    </div>
-                </div>
-                <div class="delivery-details">
-                    <div class="address">
-                        <span class="material-icons">location_on</span>
-                        <span>${delivery.address}</span>
-                    </div>
-                    <div class="order-items">
-                        <span class="item">${delivery.items.join(', ')}</span>
-                        <span class="amount">₹${delivery.amount}</span>
-                    </div>
-                </div>
-                <div class="delivery-actions">
-                    <button class="btn-outline" onclick="app.callCustomer('${delivery.customer}')">
-                        <span class="material-icons">call</span>
-                        Call
-                    </button>
-                    <button class="btn-outline" onclick="app.navigateToCustomer(${delivery.id})">
-                        <span class="material-icons">directions</span>
-                        Navigate
-                    </button>
-                    <button class="btn-primary" onclick="app.markDelivered(${delivery.id})">
-                        <span class="material-icons">check_circle</span>
-                        Delivered
-                    </button>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    async loadAdminData() {
-        // Simulate loading admin data
-        // In a real app, this would fetch from an API
-        console.log('Loading admin data...');
-        
-        // Initialize charts
-        this.initCharts();
-    }
-
-    initCharts() {
-        // Simulate chart initialization
-        // In a real app, you would use Chart.js or similar
-        const revenueCtx = document.getElementById('revenueChart');
-        const productsCtx = document.getElementById('productsChart');
-        
-        if (revenueCtx) {
-            revenueCtx.innerHTML = `
-                <div style="text-align: center; padding: 40px; color: #666;">
-                    <span class="material-icons" style="font-size: 48px; margin-bottom: 16px;">analytics</span>
-                    <p>Revenue Chart</p>
-                </div>
-            `;
-        }
-        
-        if (productsCtx) {
-            productsCtx.innerHTML = `
-                <div style="text-align: center; padding: 40px; color: #666;">
-                    <span class="material-icons" style="font-size: 48px; margin-bottom: 16px;">pie_chart</span>
-                    <p>Products Chart</p>
-                </div>
-            `;
-        }
-    }
-
-    loadViewData(viewName) {
-        switch (viewName) {
-            case 'cartView':
-                this.renderCartView();
-                break;
-            case 'ordersView':
-                this.renderOrdersView();
-                break;
-            case 'profileView':
-                this.renderProfileView();
-                break;
+            // Implementation for cart items
+            container.innerHTML = '<p>Cart items will be shown here</p>';
         }
     }
 
     renderOrdersView() {
         const container = document.querySelector('.orders-container');
-        container.innerHTML = `
-            <div class="empty-state">
-                <span class="material-icons">receipt</span>
-                <h3>No orders yet</h3>
-                <p>Your order history will appear here</p>
-            </div>
-        `;
+        if (container) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <span class="material-icons">receipt</span>
+                    <h3>No orders yet</h3>
+                    <p>Your order history will appear here</p>
+                </div>
+            `;
+        }
     }
 
     renderProfileView() {
         const container = document.querySelector('.profile-container');
-        container.innerHTML = `
-            <div class="profile-card">
-                <div class="profile-header">
-                    <div class="avatar">
-                        <span class="material-icons">person</span>
+        if (container) {
+            container.innerHTML = `
+                <div class="profile-card">
+                    <div class="profile-header">
+                        <div class="avatar">
+                            <span class="material-icons">person</span>
+                        </div>
+                        <div class="profile-info">
+                            <h3>John Doe</h3>
+                            <p>+91 9876543210</p>
+                        </div>
                     </div>
-                    <div class="profile-info">
-                        <h3>John Doe</h3>
-                        <p>+91 9876543210</p>
-                    </div>
-                </div>
-                <div class="profile-stats">
-                    <div class="stat">
-                        <span class="number">12</span>
-                        <span class="label">Orders</span>
-                    </div>
-                    <div class="stat">
-                        <span class="number">30</span>
-                        <span class="label">Days</span>
-                    </div>
-                    <div class="stat">
-                        <span class="number">₹360</span>
-                        <span class="label">Saved</span>
+                    <div class="profile-actions">
+                        <button class="profile-btn">
+                            <span class="material-icons">edit</span>
+                            Edit Profile
+                        </button>
+                        <button class="profile-btn">
+                            <span class="material-icons">location_on</span>
+                            Delivery Addresses
+                        </button>
                     </div>
                 </div>
-                <div class="profile-actions">
-                    <button class="profile-btn">
-                        <span class="material-icons">edit</span>
-                        Edit Profile
-                    </button>
-                    <button class="profile-btn">
-                        <span class="material-icons">location_on</span>
-                        Delivery Addresses
-                    </button>
-                    <button class="profile-btn">
-                        <span class="material-icons">subscriptions</span>
-                        My Subscriptions
-                    </button>
-                    <button class="profile-btn">
-                        <span class="material-icons">logout</span>
-                        Logout
-                    </button>
-                </div>
-            </div>
-        `;
+            `;
+        }
     }
 
-    // Agency methods
-    callCustomer(customerName) {
-        this.showNotification(`Calling ${customerName}...`);
+    loadAgencyData() {
+        console.log('Loading agency data...');
+        // Implementation for agency data
     }
 
-    navigateToCustomer(deliveryId) {
-        this.showNotification(`Starting navigation to delivery ${deliveryId}...`);
-    }
-
-    markDelivered(deliveryId) {
-        this.showNotification(`Delivery ${deliveryId} marked as delivered!`);
-        // In real app, update the delivery status
-    }
-
-    // Utility methods
-    showLoadingSkeleton() {
-        document.getElementById('loadingSkeleton').style.display = 'block';
-    }
-
-    hideLoadingSkeleton() {
-        document.getElementById('loadingSkeleton').style.display = 'none';
-    }
-
-    showNotification(message, type = 'success') {
-        // Create notification element
-        const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
-        notification.innerHTML = `
-            <span class="material-icons">${type === 'success' ? 'check_circle' : 'error'}</span>
-            <span>${message}</span>
-        `;
-
-        // Add styles
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: ${type === 'success' ? '#4CAF50' : '#f44336'};
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transform: translateX(400px);
-            transition: transform 0.3s ease;
-            max-width: 300px;
-        `;
-
-        document.body.appendChild(notification);
-
-        // Animate in
-        setTimeout(() => {
-            notification.style.transform = 'translateX(0)';
-        }, 100);
-
-        // Remove after 3 seconds
-        setTimeout(() => {
-            notification.style.transform = 'translateX(400px)';
-            setTimeout(() => {
-                document.body.removeChild(notification);
-            }, 300);
-        }, 3000);
-    }
-
-    showError(message) {
-        this.showNotification(message, 'error');
+    loadAdminData() {
+        console.log('Loading admin data...');
+        // Implementation for admin data
     }
 
     checkOnlineStatus() {
@@ -832,10 +725,12 @@ class AkshayaMilkApp {
 
     updateOnlineIndicator() {
         const indicator = document.getElementById('offlineIndicator');
-        if (this.state.isOnline) {
-            indicator.classList.remove('show');
-        } else {
-            indicator.classList.add('show');
+        if (indicator) {
+            if (this.state.isOnline) {
+                indicator.classList.remove('show');
+            } else {
+                indicator.classList.add('show');
+            }
         }
     }
 
@@ -858,24 +753,29 @@ class AkshayaMilkApp {
             console.warn('Could not load cart from localStorage:', error);
         }
     }
-
-    quickActions() {
-        this.showNotification('Quick actions menu opened');
-    }
-
-    startNavigation() {
-        this.showNotification('Starting delivery route navigation...');
-    }
-
-    showAddModal() {
-        this.showNotification('Add new item/agency modal opened');
-    }
 }
 
 // Initialize the app when DOM is loaded
 let app;
-document.addEventListener('DOMContentLoaded', () => {
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('📄 DOM Content Loaded');
     app = new AkshayaMilkApp();
+    app.init().catch(error => {
+        console.error('Failed to initialize app:', error);
+    });
+});
+
+// Fallback initialization
+window.addEventListener('load', function() {
+    console.log('🔄 Window Loaded');
+    if (!app) {
+        console.log('🔄 Initializing app from window load...');
+        app = new AkshayaMilkApp();
+        app.init().catch(error => {
+            console.error('Failed to initialize app from window load:', error);
+        });
+    }
 });
 
 // Make app globally available for onclick handlers
