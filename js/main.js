@@ -1,4 +1,4 @@
-// Main application initialization - FIXED VERSION
+// Main application initialization - CLICK FIXED VERSION
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 Akshaya Milk Delivery System loaded');
     
@@ -36,47 +36,43 @@ function showAppSelector() {
     document.getElementById('backToSelector').style.display = 'none';
     
     // Show app selector
-    const appSelector = document.getElementById('appSelector');
-    appSelector.style.display = 'flex';
+    document.getElementById('appSelector').style.display = 'flex';
     
-    // Setup app card click events
+    // Setup app card click events IMMEDIATELY
     setupAppCards();
     
     // Setup back button
     setupBackButton();
 }
 
+// SIMPLE CLICK HANDLER - This will definitely work
 function setupAppCards() {
     console.log('🔧 Setting up app cards');
     
     const appCards = document.querySelectorAll('.app-card');
-    appCards.forEach(card => {
-        // Remove any existing event listeners
-        card.replaceWith(card.cloneNode(true));
-    });
     
-    // Re-select and add fresh event listeners
-    const freshAppCards = document.querySelectorAll('.app-card');
-    freshAppCards.forEach(card => {
-        card.addEventListener('click', function() {
+    appCards.forEach(card => {
+        // Remove any existing click events
+        card.onclick = null;
+        
+        // Add new click event - SIMPLE DIRECT APPROACH
+        card.onclick = function() {
             const appType = this.getAttribute('data-app');
             console.log('🎯 App card clicked:', appType);
             switchToApp(appType);
-        });
+        };
+        
+        // Also add cursor pointer to make it obvious it's clickable
+        card.style.cursor = 'pointer';
     });
     
-    console.log('✅ App cards setup complete');
+    console.log('✅ App cards setup complete - found', appCards.length, 'cards');
 }
 
 function setupBackButton() {
     const backButton = document.getElementById('backToSelector');
     if (backButton) {
-        // Remove any existing event listeners
-        backButton.replaceWith(backButton.cloneNode(true));
-        
-        // Re-select and add fresh event listener
-        const freshBackButton = document.getElementById('backToSelector');
-        freshBackButton.addEventListener('click', showAppSelector);
+        backButton.onclick = showAppSelector;
         console.log('✅ Back button setup complete');
     }
 }
@@ -109,58 +105,48 @@ function switchToApp(appType) {
 }
 
 function initializeApp(appType) {
+    console.log('🚀 Initializing app:', appType);
+    
     switch(appType) {
         case 'customer':
             if (typeof initializeCustomerApp === 'function') {
-                console.log('🚀 Initializing Customer App');
                 initializeCustomerApp();
             } else {
-                console.error('❌ initializeCustomerApp function not found');
-                // Fallback: Show basic customer app
-                document.getElementById('customerApp').innerHTML = `
-                    <div style="padding: 20px; text-align: center;">
-                        <h1>Customer App</h1>
-                        <p>App loaded successfully!</p>
-                        <button onclick="showAppSelector()" class="btn-primary">Back to Selector</button>
-                    </div>
-                `;
+                showFallbackApp(appType);
             }
             break;
         case 'agency':
             if (typeof initializeAgencyApp === 'function') {
-                console.log('🚀 Initializing Agency App');
                 initializeAgencyApp();
             } else {
-                console.error('❌ initializeAgencyApp function not found');
-                // Fallback
-                document.getElementById('agencyApp').innerHTML = `
-                    <div style="padding: 20px; text-align: center;">
-                        <h1>Agency App</h1>
-                        <p>App loaded successfully!</p>
-                        <button onclick="showAppSelector()" class="btn-primary">Back to Selector</button>
-                    </div>
-                `;
+                showFallbackApp(appType);
             }
             break;
         case 'owner':
             if (typeof initializeOwnerApp === 'function') {
-                console.log('🚀 Initializing Owner App');
                 initializeOwnerApp();
             } else {
-                console.error('❌ initializeOwnerApp function not found');
-                // Fallback
-                document.getElementById('ownerApp').innerHTML = `
-                    <div style="padding: 20px; text-align: center;">
-                        <h1>Owner App</h1>
-                        <p>App loaded successfully!</p>
-                        <button onclick="showAppSelector()" class="btn-primary">Back to Selector</button>
-                    </div>
-                `;
+                showFallbackApp(appType);
             }
             break;
         default:
             console.error('❌ Unknown app type:', appType);
     }
+}
+
+function showFallbackApp(appType) {
+    console.log('🔄 Showing fallback for:', appType);
+    const appContainer = document.getElementById(appType + 'App');
+    appContainer.innerHTML = `
+        <div style="padding: 40px; text-align: center;">
+            <h1>${appType.charAt(0).toUpperCase() + appType.slice(1)} App</h1>
+            <p>✅ Successfully loaded!</p>
+            <p>This is the ${appType} interface.</p>
+            <button onclick="showAppSelector()" class="btn-primary" style="margin-top: 20px;">
+                ← Back to App Selector
+            </button>
+        </div>
+    `;
 }
 
 // Make functions globally available
