@@ -1,0 +1,31 @@
+{
+  "agencies": [
+    {
+      "id": "agency_1",
+      "email": "agency@akshaya.com",
+      "businessName": "Akshaya Dairies",
+      "brandColor": "#1976d2",
+      "logo": "/icons/icon-192.png",
+      "plan": "trial",
+      "trialStarts": "2025-10-01T00:00:00Z",
+      "customers": []
+    }
+  ],
+  "customers": [
+    {
+      "id": "cust_1",
+      "name": "Customer One",
+      "email": "customer@akshaya.com",
+      "phone": "9999999999",
+      "agencyId": "agency_1",
+      "package": "1L",
+      "planDurationDays": 30
+    }
+  ],
+  "subscriptions": [
+    { "agencyId": "agency_1", "plan": "Monthly", "price": 2000 }
+  ],
+  "deliveries": {
+    "agency_1": {}
+  }
+}
