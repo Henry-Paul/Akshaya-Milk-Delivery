@@ -4,18 +4,20 @@ class AgencyApp {
         this.state = {
             currentSection: 'deliveries',
             deliveries: [],
-            products: [],
-            promotions: []
+            products: []
         };
     }
 
     initialize() {
+        console.log('🚚 Initializing Agency App');
+        
         this.loadSampleData();
         this.renderAgencyApp();
     }
 
     renderAgencyApp() {
         const appContainer = document.getElementById('agencyApp');
+        
         appContainer.innerHTML = `
             <div class="agency-app">
                 <header class="agency-header">
@@ -45,17 +47,12 @@ class AgencyApp {
                                 onclick="agencyApp.showSection('products')">
                             Product Management
                         </button>
-                        <button class="agency-nav-btn ${this.state.currentSection === 'promotions' ? 'active' : ''}" 
-                                onclick="agencyApp.showSection('promotions')">
-                            Promotions
-                        </button>
                     </div>
                 </header>
 
                 <main class="agency-main">
                     ${this.state.currentSection === 'deliveries' ? this.renderDeliveries() : ''}
                     ${this.state.currentSection === 'products' ? this.renderProductManagement() : ''}
-                    ${this.state.currentSection === 'promotions' ? this.renderPromotions() : ''}
                 </main>
             </div>
         `;
@@ -113,63 +110,14 @@ class AgencyApp {
                     ${this.state.products.map(product => `
                         <div class="management-card">
                             <h3>${product.name}</h3>
-                            <div class="form-group">
-                                <label>Current Price</label>
-                                <input type="number" value="${product.price}" 
-                                       onchange="agencyApp.updateProductPrice(${product.id}, this.value)">
+                            <p><strong>Current Price:</strong> ₹${product.price}</p>
+                            <p><strong>Stock:</strong> ${product.stock} units</p>
+                            <p><strong>Status:</strong> ${product.available ? 'Available' : 'Out of Stock'}</p>
+                            <div class="action-buttons" style="margin-top: 15px;">
+                                <button class="btn-primary" onclick="agencyApp.editProduct(${product.id})">
+                                    Edit Product
+                                </button>
                             </div>
-                            <div class="form-group">
-                                <label>Stock Quantity</label>
-                                <input type="number" value="${product.stock}" 
-                                       onchange="agencyApp.updateProductStock(${product.id}, this.value)">
-                            </div>
-                            <div class="form-group">
-                                <label>Availability</label>
-                                <select onchange="agencyApp.updateProductAvailability(${product.id}, this.value)">
-                                    <option value="available" ${product.available ? 'selected' : ''}>Available</option>
-                                    <option value="unavailable" ${!product.available ? 'selected' : ''}>Out of Stock</option>
-                                </select>
-                            </div>
-                            <button class="btn-primary" onclick="agencyApp.saveProductChanges(${product.id})">
-                                Save Changes
-                            </button>
-                        </div>
-                    `).join('')}
-                </div>
-            </div>
-        `;
-    }
-
-    renderPromotions() {
-        return `
-            <div class="management-section">
-                <h2 class="section-title">Promotion Management</h2>
-                <div class="form-group">
-                    <label>Promotion Title</label>
-                    <input type="text" id="promoTitle" placeholder="e.g., Summer Special Offer">
-                </div>
-                <div class="form-group">
-                    <label>Discount Percentage</label>
-                    <input type="number" id="promoDiscount" placeholder="e.g., 20" min="1" max="100">
-                </div>
-                <div class="form-group">
-                    <label>Valid Until</label>
-                    <input type="date" id="promoValidUntil">
-                </div>
-                <button class="btn-primary" onclick="agencyApp.createPromotion()">
-                    Create Promotion
-                </button>
-
-                <div class="promotions-list" style="margin-top: 24px;">
-                    <h3>Active Promotions</h3>
-                    ${this.state.promotions.map(promo => `
-                        <div class="management-card">
-                            <h4>${promo.title}</h4>
-                            <p><strong>Discount:</strong> ${promo.discount}%</p>
-                            <p><strong>Valid Until:</strong> ${promo.validUntil}</p>
-                            <button class="btn-primary" onclick="agencyApp.deactivatePromotion(${promo.id})">
-                                Deactivate
-                            </button>
                         </div>
                     `).join('')}
                 </div>
@@ -231,16 +179,6 @@ class AgencyApp {
                 available: true
             }
         ];
-
-        // Sample promotions data
-        this.state.promotions = [
-            {
-                id: 1,
-                title: "Weekend Special",
-                discount: 15,
-                validUntil: "2024-12-31"
-            }
-        ];
     }
 
     getCompletedDeliveries() {
@@ -253,11 +191,11 @@ class AgencyApp {
 
     // Delivery methods
     callCustomer(phone) {
-        alert(`Calling customer at ${phone}`);
+        this.showNotification(`📞 Calling customer at ${phone}`);
     }
 
     startNavigation(address) {
-        alert(`Starting navigation to: ${address}`);
+        this.showNotification(`🗺️ Navigating to: ${address}`);
     }
 
     markDelivered(deliveryId) {
@@ -265,93 +203,49 @@ class AgencyApp {
         if (delivery) {
             delivery.status = 'completed';
             this.renderAgencyApp();
-            this.showNotification(`Delivery marked as completed for ${delivery.customerName}`);
+            this.showNotification(`✅ Delivery completed for ${delivery.customerName}`);
         }
     }
 
-    // Product management methods
-    updateProductPrice(productId, newPrice) {
-        const product = this.state.products.find(p => p.id === productId);
-        if (product) {
-            product.newPrice = newPrice;
-        }
+    editProduct(productId) {
+        this.showNotification(`✏️ Editing product #${productId}`);
     }
 
-    updateProductStock(productId, newStock) {
-        const product = this.state.products.find(p => p.id === productId);
-        if (product) {
-            product.newStock = newStock;
-        }
-    }
-
-    updateProductAvailability(productId, availability) {
-        const product = this.state.products.find(p => p.id === productId);
-        if (product) {
-            product.newAvailability = availability === 'available';
-        }
-    }
-
-    saveProductChanges(productId) {
-        const product = this.state.products.find(p => p.id === productId);
-        if (product) {
-            if (product.newPrice !== undefined) {
-                product.price = product.newPrice;
-                delete product.newPrice;
+    showNotification(message) {
+        // Create a simple notification
+        const notification = document.createElement('div');
+        notification.textContent = message;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4A90E2;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            z-index: 1000;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        `;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            if (document.body.contains(notification)) {
+                document.body.removeChild(notification);
             }
-            if (product.newStock !== undefined) {
-                product.stock = product.newStock;
-                delete product.newStock;
-            }
-            if (product.newAvailability !== undefined) {
-                product.available = product.newAvailability;
-                delete product.newAvailability;
-            }
-            this.renderAgencyApp();
-            this.showNotification('Product changes saved successfully!');
-        }
-    }
-
-    // Promotion methods
-    createPromotion() {
-        const title = document.getElementById('promoTitle').value;
-        const discount = document.getElementById('promoDiscount').value;
-        const validUntil = document.getElementById('promoValidUntil').value;
-
-        if (!title || !discount || !validUntil) {
-            this.showNotification('Please fill all promotion details', 'error');
-            return;
-        }
-
-        const newPromotion = {
-            id: Date.now(),
-            title: title,
-            discount: parseInt(discount),
-            validUntil: validUntil
-        };
-
-        this.state.promotions.push(newPromotion);
-        this.renderAgencyApp();
-        this.showNotification('Promotion created successfully!');
-
-        // Clear form
-        document.getElementById('promoTitle').value = '';
-        document.getElementById('promoDiscount').value = '';
-        document.getElementById('promoValidUntil').value = '';
-    }
-
-    deactivatePromotion(promoId) {
-        this.state.promotions = this.state.promotions.filter(p => p.id !== promoId);
-        this.renderAgencyApp();
-        this.showNotification('Promotion deactivated');
-    }
-
-    showNotification(message, type = 'success') {
-        alert(message);
+        }, 3000);
     }
 }
 
 // Initialize agency app
 const agencyApp = new AgencyApp();
+
 function initializeAgencyApp() {
+    console.log('🚚 Initializing Agency App');
     agencyApp.initialize();
 }
+
+// Make globally available
+window.agencyApp = agencyApp;
+window.initializeAgencyApp = initializeAgencyApp;
