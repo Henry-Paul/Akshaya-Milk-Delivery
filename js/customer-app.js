@@ -7,30 +7,19 @@ class CustomerApp {
             currentView: 'home',
             selectedCategory: 'all'
         };
-        this.initialized = false;
     }
 
     initialize() {
-        if (this.initialized) return;
-        
-        console.log('🛒 Initializing Customer App...');
+        console.log('🛒 Initializing Customer App');
         
         this.loadProducts();
         this.loadCartFromStorage();
         this.renderCustomerApp();
-        this.setupEventListeners();
-        
-        this.initialized = true;
-        console.log('✅ Customer App initialized successfully');
     }
 
     renderCustomerApp() {
         const appContainer = document.getElementById('customerApp');
-        if (!appContainer) {
-            console.error('❌ Customer app container not found');
-            return;
-        }
-
+        
         appContainer.innerHTML = `
             <div class="customer-app">
                 <header class="customer-header">
@@ -432,17 +421,16 @@ class CustomerApp {
             border-radius: 8px;
             z-index: 1000;
             font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         `;
         
         document.body.appendChild(notification);
         
         setTimeout(() => {
-            document.body.removeChild(notification);
+            if (document.body.contains(notification)) {
+                document.body.removeChild(notification);
+            }
         }, 3000);
-    }
-
-    setupEventListeners() {
-        // Event listeners are handled inline in the HTML for simplicity
     }
 
     handleSearch(query = '') {
@@ -473,8 +461,7 @@ class CustomerApp {
     showProductDetail(productId) {
         const product = this.state.products.find(p => p.id === productId);
         if (product) {
-            this.showNotification(`📱 Showing details for ${product.name}`);
-            // In a real app, you would show a modal with product details
+            this.showNotification(`📱 ${product.name} - ₹${product.price}`);
         }
     }
 
@@ -487,7 +474,7 @@ class CustomerApp {
 const customerApp = new CustomerApp();
 
 function initializeCustomerApp() {
-    console.log('🛒 Initializing Customer App...');
+    console.log('🛒 Initializing Customer App');
     customerApp.initialize();
 }
 
