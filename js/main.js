@@ -1,9 +1,12 @@
-// Main application initialization
+// Main application initialization - FIXED VERSION
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 Akshaya Milk Delivery System loaded');
     
     // Show splash screen first
     showSplashScreen();
+    
+    // Setup app selector click events immediately
+    setupAppSelector();
 });
 
 function showSplashScreen() {
@@ -26,6 +29,27 @@ function showSplashScreen() {
     }, 2000);
 }
 
+function setupAppSelector() {
+    console.log('🔧 Setting up app selector events');
+    
+    // Add click event listeners to app cards
+    const appCards = document.querySelectorAll('.app-card');
+    appCards.forEach(card => {
+        card.addEventListener('click', function() {
+            const appType = this.getAttribute('data-app');
+            console.log('App card clicked:', appType);
+            switchToApp(appType);
+        });
+    });
+    
+    // Setup back button
+    const backButton = document.getElementById('backToSelector');
+    if (backButton) {
+        backButton.addEventListener('click', showAppSelector);
+        console.log('✅ Back button event listener added');
+    }
+}
+
 function showAppSelector() {
     console.log('🔄 Showing app selector');
     
@@ -37,25 +61,6 @@ function showAppSelector() {
     
     // Show app selector
     document.getElementById('appSelector').style.display = 'flex';
-    
-    // Setup app card click events
-    setupAppSelector();
-}
-
-function setupAppSelector() {
-    const appCards = document.querySelectorAll('.app-card');
-    
-    appCards.forEach(card => {
-        card.addEventListener('click', function() {
-            const appType = this.getAttribute('data-app');
-            console.log('App selected:', appType);
-            switchToApp(appType);
-        });
-    });
-    
-    // Setup back button
-    const backButton = document.getElementById('backToSelector');
-    backButton.addEventListener('click', showAppSelector);
 }
 
 function switchToApp(appType) {
@@ -74,25 +79,41 @@ function switchToApp(appType) {
     
     // Show selected app
     const selectedApp = document.getElementById(appType + 'App');
-    selectedApp.style.display = 'block';
-    
-    // Initialize the selected app
-    switch(appType) {
-        case 'customer':
-            if (typeof initializeCustomerApp === 'function') {
-                initializeCustomerApp();
-            }
-            break;
-        case 'agency':
-            if (typeof initializeAgencyApp === 'function') {
-                initializeAgencyApp();
-            }
-            break;
-        case 'owner':
-            if (typeof initializeOwnerApp === 'function') {
-                initializeOwnerApp();
-            }
-            break;
+    if (selectedApp) {
+        selectedApp.style.display = 'block';
+        console.log('✅ Showing app:', appType);
+        
+        // Initialize the selected app
+        switch(appType) {
+            case 'customer':
+                if (typeof initializeCustomerApp === 'function') {
+                    console.log('🚀 Initializing Customer App');
+                    initializeCustomerApp();
+                } else {
+                    console.error('❌ initializeCustomerApp function not found');
+                }
+                break;
+            case 'agency':
+                if (typeof initializeAgencyApp === 'function') {
+                    console.log('🚀 Initializing Agency App');
+                    initializeAgencyApp();
+                } else {
+                    console.error('❌ initializeAgencyApp function not found');
+                }
+                break;
+            case 'owner':
+                if (typeof initializeOwnerApp === 'function') {
+                    console.log('🚀 Initializing Owner App');
+                    initializeOwnerApp();
+                } else {
+                    console.error('❌ initializeOwnerApp function not found');
+                }
+                break;
+            default:
+                console.error('❌ Unknown app type:', appType);
+        }
+    } else {
+        console.error('❌ App container not found:', appType + 'App');
     }
 }
 
