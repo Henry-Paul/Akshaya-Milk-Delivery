@@ -3,177 +3,526 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Akshaya Milk Delivery</title>
-    <meta name="description" content="Fresh milk delivery at your doorstep">
+    <title>Akshaya Milk Delivery - Fresh Milk, Happy Homes</title>
+    <meta name="description" content="Farm-fresh milk and dairy products delivered to your doorstep daily">
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥛</text></svg>">
-    <meta name="theme-color" content="#FD9139">
+    <meta name="theme-color" content="#FC8019">
 </head>
 <body>
-    <!-- App Container -->
-    <div id="app">
-        <!-- Header -->
-        <header class="header">
-            <div class="container">
-                <div class="header-content">
-                    <div class="logo">
-                        <span class="logo-icon">🥛</span>
-                        <span class="logo-text">Akshaya Milk</span>
-                    </div>
-                    <div class="header-actions">
-                        <button class="icon-btn" id="searchBtn">
-                            <span>🔍</span>
-                        </button>
-                        <button class="icon-btn" id="cartBtn">
-                            <span>🛒</span>
-                            <span class="badge" id="cartCount">0</span>
-                        </button>
-                    </div>
-                </div>
+    <!-- Splash Screen -->
+    <div id="splashScreen" class="splash-screen">
+        <div class="splash-content">
+            <div class="milk-animation">
+                <div class="milk-bottle">🥛</div>
+                <div class="splash-wave"></div>
             </div>
-        </header>
-
-        <!-- Search Bar -->
-        <div class="search-section" id="searchSection">
-            <div class="container">
-                <div class="search-box">
-                    <input type="text" id="searchInput" placeholder="Search milk, curd, paneer...">
-                    <button class="filter-btn" id="filterBtn">Filter</button>
-                </div>
-            </div>
+            <h1 class="brand-logo">Akshaya Milk</h1>
+            <p class="tagline">Fresh Milk, Happy Homes</p>
         </div>
+    </div>
 
-        <!-- Main Content -->
-        <main class="main">
-            <div class="container">
-                <!-- Hero Banner -->
-                <section class="hero-banner">
-                    <div class="hero-content">
-                        <h1>Fresh Milk Delivered Daily</h1>
-                        <p>Get your daily dose of freshness with Akshaya Milk</p>
-                        <button class="cta-button" id="exploreBtn">Explore Products</button>
+    <!-- Main App -->
+    <div id="app" class="app-container" style="display: none;">
+        <!-- Customer App View -->
+        <div id="customerView" class="view active">
+            <!-- Header -->
+            <header class="app-header">
+                <div class="container">
+                    <div class="header-content">
+                        <div class="location-selector">
+                            <span class="material-icons">location_on</span>
+                            <div class="location-info">
+                                <span class="delivery-to">Delivery to</span>
+                                <span class="address" id="currentAddress">Home • 7:00 AM</span>
+                            </div>
+                            <span class="material-icons">keyboard_arrow_down</span>
+                        </div>
+                        <div class="header-actions">
+                            <button class="icon-btn" id="notificationsBtn">
+                                <span class="material-icons">notifications</span>
+                            </button>
+                        </div>
                     </div>
-                </section>
+                </div>
+            </header>
 
-                <!-- Categories -->
-                <section class="categories">
-                    <h2 class="section-title">Categories</h2>
-                    <div class="categories-grid">
-                        <div class="category-card" data-category="milk">
+            <!-- Search Section -->
+            <section class="search-section">
+                <div class="container">
+                    <div class="search-container">
+                        <div class="search-bar">
+                            <span class="material-icons">search</span>
+                            <input type="text" id="searchInput" placeholder="Search milk, curd, ghee...">
+                            <button class="filter-btn" id="filterBtn">
+                                <span class="material-icons">tune</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Categories -->
+            <section class="categories-section">
+                <div class="container">
+                    <div class="categories-scroll">
+                        <div class="category-item active" data-category="all">
                             <div class="category-icon">🥛</div>
+                            <span>All</span>
+                        </div>
+                        <div class="category-item" data-category="milk">
+                            <div class="category-icon">🐄</div>
                             <span>Milk</span>
                         </div>
-                        <div class="category-card" data-category="curd">
+                        <div class="category-item" data-category="curd">
                             <div class="category-icon">🍶</div>
                             <span>Curd</span>
                         </div>
-                        <div class="category-card" data-category="paneer">
+                        <div class="category-item" data-category="paneer">
                             <div class="category-icon">🧀</div>
                             <span>Paneer</span>
                         </div>
-                        <div class="category-card" data-category="ghee">
+                        <div class="category-item" data-category="ghee">
                             <div class="category-icon">🫕</div>
                             <span>Ghee</span>
                         </div>
-                    </div>
-                </section>
-
-                <!-- Products Grid -->
-                <section class="products">
-                    <h2 class="section-title">Popular Products</h2>
-                    <div class="products-grid" id="productsGrid">
-                        <!-- Products will be loaded dynamically -->
-                    </div>
-                </section>
-            </div>
-        </main>
-
-        <!-- Bottom Navigation -->
-        <nav class="bottom-nav">
-            <a href="#home" class="nav-item active" data-page="home">
-                <span class="nav-icon">🏠</span>
-                <span class="nav-label">Home</span>
-            </a>
-            <a href="#orders" class="nav-item" data-page="orders">
-                <span class="nav-icon">📦</span>
-                <span class="nav-label">Orders</span>
-            </a>
-            <a href="#subscriptions" class="nav-item" data-page="subscriptions">
-                <span class="nav-icon">🔄</span>
-                <span class="nav-label">Subscriptions</span>
-            </a>
-            <a href="#profile" class="nav-item" data-page="profile">
-                <span class="nav-icon">👤</span>
-                <span class="nav-label">Profile</span>
-            </a>
-        </nav>
-
-        <!-- Cart Sidebar -->
-        <div class="cart-sidebar" id="cartSidebar">
-            <div class="cart-header">
-                <h3>Your Cart</h3>
-                <button class="close-btn" id="closeCart">✕</button>
-            </div>
-            <div class="cart-items" id="cartItems">
-                <!-- Cart items will be loaded here -->
-            </div>
-            <div class="cart-footer">
-                <div class="cart-total">
-                    <span>Total: ₹<span id="cartTotal">0</span></span>
-                </div>
-                <button class="checkout-btn" id="checkoutBtn">Proceed to Checkout</button>
-            </div>
-        </div>
-
-        <!-- Product Modal -->
-        <div class="modal" id="productModal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 id="modalProductName">Product Name</h3>
-                    <button class="close-btn" id="closeModal">✕</button>
-                </div>
-                <div class="modal-body">
-                    <div class="product-detail">
-                        <div class="product-image-large">
-                            <span id="modalProductIcon">🥛</span>
+                        <div class="category-item" data-category="butter">
+                            <div class="category-icon">🧈</div>
+                            <span>Butter</span>
                         </div>
-                        <div class="product-info">
-                            <p id="modalProductDesc">Product description</p>
-                            <div class="price-section">
-                                <span class="price" id="modalProductPrice">₹0</span>
-                                <span class="unit" id="modalProductUnit">/litre</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Banner Carousel -->
+            <section class="banner-section">
+                <div class="container">
+                    <div class="banner-carousel">
+                        <div class="banner-slide active">
+                            <div class="banner-content">
+                                <h3>100% Organic Milk</h3>
+                                <p>Chemical-free, farm fresh delivery</p>
+                                <button class="banner-cta">Order Now</button>
+                            </div>
+                            <div class="banner-image">
+                                <span class="banner-emoji">🌱</span>
                             </div>
                         </div>
                     </div>
-                    <div class="quantity-selector">
-                        <label>Quantity:</label>
-                        <div class="quantity-controls">
-                            <button class="qty-btn" id="decreaseQty">-</button>
-                            <span class="qty-value" id="currentQty">1</span>
-                            <button class="qty-btn" id="increaseQty">+</button>
+                </div>
+            </section>
+
+            <!-- Products Grid -->
+            <main class="main-content">
+                <div class="container">
+                    <section class="products-section">
+                        <div class="section-header">
+                            <h2 class="section-title">Daily Milk Plans</h2>
+                            <button class="see-all-btn">See All</button>
+                        </div>
+                        <div class="products-grid" id="productsGrid">
+                            <!-- Products loaded dynamically -->
+                        </div>
+                    </section>
+
+                    <!-- Subscription Plans -->
+                    <section class="subscription-section">
+                        <div class="section-header">
+                            <h2 class="section-title">Subscription Plans</h2>
+                        </div>
+                        <div class="subscription-cards">
+                            <div class="subscription-card popular">
+                                <div class="plan-badge">MOST POPULAR</div>
+                                <div class="plan-header">
+                                    <h3>Weekly Plan</h3>
+                                    <div class="plan-price">
+                                        <span class="price">₹210</span>
+                                        <span class="period">/week</span>
+                                    </div>
+                                </div>
+                                <ul class="plan-features">
+                                    <li><span class="material-icons">check</span>7 days delivery</li>
+                                    <li><span class="material-icons">check</span>Free delivery</li>
+                                    <li><span class="material-icons">check</span>Flexible timings</li>
+                                </ul>
+                                <button class="subscribe-btn">Subscribe</button>
+                            </div>
+                            
+                            <div class="subscription-card">
+                                <div class="plan-header">
+                                    <h3>Monthly Plan</h3>
+                                    <div class="plan-price">
+                                        <span class="price">₹780</span>
+                                        <span class="period">/month</span>
+                                    </div>
+                                </div>
+                                <ul class="plan-features">
+                                    <li><span class="material-icons">check</span>30 days delivery</li>
+                                    <li><span class="material-icons">check</span>Free delivery</li>
+                                    <li><span class="material-icons">check</span>Priority support</li>
+                                </ul>
+                                <button class="subscribe-btn">Subscribe</button>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </main>
+
+            <!-- Bottom Navigation -->
+            <nav class="bottom-nav">
+                <a href="#home" class="nav-item active" data-view="customerView">
+                    <span class="material-icons">home</span>
+                    <span class="nav-label">Home</span>
+                </a>
+                <a href="#orders" class="nav-item" data-view="ordersView">
+                    <span class="material-icons">receipt</span>
+                    <span class="nav-label">Orders</span>
+                </a>
+                <a href="#cart" class="nav-item" data-view="cartView">
+                    <span class="material-icons">shopping_cart</span>
+                    <span class="nav-label">Cart</span>
+                    <span class="cart-count-badge" id="navCartCount">0</span>
+                </a>
+                <a href="#profile" class="nav-item" data-view="profileView">
+                    <span class="material-icons">person</span>
+                    <span class="nav-label">Profile</span>
+                </a>
+            </nav>
+        </div>
+
+        <!-- Orders View -->
+        <div id="ordersView" class="view">
+            <div class="view-header">
+                <button class="back-btn" data-view="customerView">
+                    <span class="material-icons">arrow_back</span>
+                </button>
+                <h2>Your Orders</h2>
+            </div>
+            <div class="orders-container">
+                <!-- Orders will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Cart View -->
+        <div id="cartView" class="view">
+            <div class="view-header">
+                <button class="back-btn" data-view="customerView">
+                    <span class="material-icons">arrow_back</span>
+                </button>
+                <h2>Your Cart</h2>
+            </div>
+            <div class="cart-container">
+                <!-- Cart items loaded here -->
+            </div>
+        </div>
+
+        <!-- Profile View -->
+        <div id="profileView" class="view">
+            <div class="view-header">
+                <button class="back-btn" data-view="customerView">
+                    <span class="material-icons">arrow_back</span>
+                </button>
+                <h2>Profile</h2>
+            </div>
+            <div class="profile-container">
+                <!-- Profile content -->
+            </div>
+        </div>
+
+        <!-- Agency App View -->
+        <div id="agencyView" class="view">
+            <div class="agency-header">
+                <div class="header-content">
+                    <div class="greeting">
+                        <h1>Good Morning, Rajesh! 🚚</h1>
+                        <p>You have <span id="deliveryCount">12</span> deliveries today</p>
+                    </div>
+                    <div class="header-stats">
+                        <div class="stat-item">
+                            <span class="stat-number" id="completedDeliveries">8</span>
+                            <span class="stat-label">Completed</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="pendingDeliveries">4</span>
+                            <span class="stat-label">Pending</span>
                         </div>
                     </div>
-                    <div class="subscription-options">
-                        <label>Delivery Schedule:</label>
-                        <select id="deliverySchedule">
-                            <option value="once">One-time delivery</option>
-                            <option value="daily">Daily</option>
-                            <option value="weekly">Weekly</option>
-                            <option value="monthly">Monthly</option>
-                        </select>
+                </div>
+            </div>
+
+            <div class="map-container">
+                <div class="map-placeholder" id="deliveryMap">
+                    <div class="map-overlay">
+                        <span class="material-icons">map</span>
+                        <p>Live Delivery Map</p>
+                        <button class="btn-primary" onclick="startNavigation()">
+                            <span class="material-icons">navigation</span>
+                            Start Route
+                        </button>
                     </div>
                 </div>
+            </div>
+
+            <div class="delivery-list-container">
+                <div class="section-header">
+                    <h2>Today's Deliveries</h2>
+                    <select class="sort-select" id="deliverySort">
+                        <option>Route Order</option>
+                        <option>Time Slot</option>
+                    </select>
+                </div>
+                <div class="deliveries-list" id="deliveriesList">
+                    <!-- Deliveries loaded dynamically -->
+                </div>
+            </div>
+
+            <button class="fab delivery-fab" onclick="quickActions()">
+                <span class="material-icons">bolt</span>
+            </button>
+        </div>
+
+        <!-- Admin Dashboard View -->
+        <div id="adminView" class="view">
+            <div class="admin-layout">
+                <aside class="admin-sidebar">
+                    <div class="sidebar-header">
+                        <div class="brand">
+                            <span class="material-icons">local_drink</span>
+                            <span class="brand-name">Akshaya Admin</span>
+                        </div>
+                    </div>
+
+                    <nav class="sidebar-nav">
+                        <a href="#dashboard" class="nav-item active" data-admin-section="dashboard">
+                            <span class="material-icons">dashboard</span>
+                            <span>Dashboard</span>
+                        </a>
+                        <a href="#agencies" class="nav-item" data-admin-section="agencies">
+                            <span class="material-icons">local_shipping</span>
+                            <span>Agencies</span>
+                            <span class="badge">12</span>
+                        </a>
+                        <a href="#customers" class="nav-item" data-admin-section="customers">
+                            <span class="material-icons">people</span>
+                            <span>Customers</span>
+                            <span class="badge">1.2k</span>
+                        </a>
+                        <a href="#products" class="nav-item" data-admin-section="products">
+                            <span class="material-icons">inventory</span>
+                            <span>Products</span>
+                        </a>
+                        <a href="#analytics" class="nav-item" data-admin-section="analytics">
+                            <span class="material-icons">analytics</span>
+                            <span>Analytics</span>
+                        </a>
+                    </nav>
+                </aside>
+
+                <main class="admin-main">
+                    <header class="admin-header">
+                        <div class="header-actions">
+                            <div class="search-bar">
+                                <span class="material-icons">search</span>
+                                <input type="text" placeholder="Search...">
+                            </div>
+                            <div class="user-menu">
+                                <span class="user-name">Admin User</span>
+                                <span class="material-icons">account_circle</span>
+                            </div>
+                        </div>
+                    </header>
+
+                    <div class="admin-content">
+                        <!-- KPI Cards -->
+                        <section class="kpi-grid">
+                            <div class="kpi-card revenue">
+                                <div class="kpi-icon">
+                                    <span class="material-icons">currency_rupee</span>
+                                </div>
+                                <div class="kpi-content">
+                                    <h3 class="kpi-value">₹1,84,560</h3>
+                                    <p class="kpi-label">Monthly Revenue</p>
+                                    <span class="kpi-trend positive">+12%</span>
+                                </div>
+                            </div>
+
+                            <div class="kpi-card customers">
+                                <div class="kpi-icon">
+                                    <span class="material-icons">people</span>
+                                </div>
+                                <div class="kpi-content">
+                                    <h3 class="kpi-value">1,247</h3>
+                                    <p class="kpi-label">Active Customers</p>
+                                    <span class="kpi-trend positive">+8%</span>
+                                </div>
+                            </div>
+
+                            <div class="kpi-card deliveries">
+                                <div class="kpi-icon">
+                                    <span class="material-icons">local_shipping</span>
+                                </div>
+                                <div class="kpi-content">
+                                    <h3 class="kpi-value">342</h3>
+                                    <p class="kpi-label">Daily Deliveries</p>
+                                    <span class="kpi-trend positive">+5%</span>
+                                </div>
+                            </div>
+
+                            <div class="kpi-card conversion">
+                                <div class="kpi-icon">
+                                    <span class="material-icons">trending_up</span>
+                                </div>
+                                <div class="kpi-content">
+                                    <h3 class="kpi-value">68%</h3>
+                                    <p class="kpi-label">Trial Conversion</p>
+                                    <span class="kpi-trend positive">+3%</span>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Charts Section -->
+                        <section class="charts-section">
+                            <div class="chart-card">
+                                <div class="chart-header">
+                                    <h3>Revenue Trends</h3>
+                                    <select class="chart-filter">
+                                        <option>Last 7 days</option>
+                                        <option>Last 30 days</option>
+                                    </select>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="revenueChart"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="chart-card">
+                                <div class="chart-header">
+                                    <h3>Top Products</h3>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="productsChart"></canvas>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </main>
+            </div>
+
+            <button class="fab admin-fab" onclick="showAddModal()">
+                <span class="material-icons">add</span>
+            </button>
+        </div>
+
+        <!-- Product Detail Modal -->
+        <div id="productModal" class="modal">
+            <div class="modal-content product-detail-modal">
+                <div class="modal-header">
+                    <button class="close-btn" id="closeModal">
+                        <span class="material-icons">close</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="product-gallery">
+                        <div class="main-image">
+                            <span id="modalProductIcon" class="product-icon-large">🥛</span>
+                        </div>
+                    </div>
+                    
+                    <div class="product-detail-content">
+                        <h1 id="modalProductName" class="product-title">Fresh Cow Milk</h1>
+                        
+                        <div class="rating-section">
+                            <span class="rating-badge">4.8 ★</span>
+                            <span class="rating-count">1.2k ratings</span>
+                        </div>
+                        
+                        <div class="price-section">
+                            <span class="current-price" id="modalProductPrice">₹30</span>
+                            <span class="original-price">₹35</span>
+                            <span class="discount">14% OFF</span>
+                        </div>
+
+                        <div class="customization-section">
+                            <h3>Choose Package Size</h3>
+                            <div class="size-options">
+                                <button class="size-option active" data-size="500ml">500ml</button>
+                                <button class="size-option" data-size="1L">1L</button>
+                                <button class="size-option" data-size="2L">2L</button>
+                            </div>
+                        </div>
+
+                        <div class="schedule-section">
+                            <h3>Delivery Schedule</h3>
+                            <div class="schedule-options">
+                                <div class="schedule-option active">
+                                    <span class="days">Mon-Fri</span>
+                                    <span class="time">7:00 AM</span>
+                                </div>
+                                <div class="schedule-option">
+                                    <span class="days">Daily</span>
+                                    <span class="time">7:00 AM</span>
+                                </div>
+                                <div class="schedule-option">
+                                    <span class="days">Weekly</span>
+                                    <span class="time">Mon 7:00 AM</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="quantity-section">
+                            <h3>Quantity</h3>
+                            <div class="quantity-controls">
+                                <button class="qty-btn" id="decreaseQty">-</button>
+                                <span class="qty-value" id="currentQty">1</span>
+                                <button class="qty-btn" id="increaseQty">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="modal-footer">
-                    <button class="add-to-cart-btn" id="addToCartModal">Add to Cart</button>
+                    <div class="cart-fab-container">
+                        <button class="fab-primary" id="addToCartModal">
+                            <span>ADD TO CART • ₹<span id="modalTotalPrice">30</span></span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Offline Indicator -->
         <div class="offline-indicator" id="offlineIndicator">
-            <span>⚠️ You are currently offline</span>
+            <span class="material-icons">wifi_off</span>
+            <span>You are currently offline</span>
         </div>
+
+        <!-- Loading Skeleton -->
+        <div id="loadingSkeleton" class="loading-skeleton">
+            <div class="skeleton-header"></div>
+            <div class="skeleton-search"></div>
+            <div class="skeleton-categories">
+                <div class="skeleton-category"></div>
+                <div class="skeleton-category"></div>
+                <div class="skeleton-category"></div>
+                <div class="skeleton-category"></div>
+            </div>
+            <div class="skeleton-banner"></div>
+            <div class="skeleton-products">
+                <div class="skeleton-product"></div>
+                <div class="skeleton-product"></div>
+                <div class="skeleton-product"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Mode Selector (Hidden in production) -->
+    <div class="mode-selector">
+        <button class="mode-btn" data-mode="customer">Customer</button>
+        <button class="mode-btn" data-mode="agency">Delivery</button>
+        <button class="mode-btn" data-mode="admin">Admin</button>
     </div>
 
     <script src="app.js"></script>
