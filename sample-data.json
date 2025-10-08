@@ -1,31 +1,86 @@
 {
-  "agencies": [
+  "products": [
     {
-      "id": "agency_1",
-      "email": "agency@akshaya.com",
-      "businessName": "Akshaya Dairies",
-      "brandColor": "#1976d2",
-      "logo": "/icons/icon-192.png",
-      "plan": "trial",
-      "trialStarts": "2025-10-01T00:00:00Z",
-      "customers": []
+      "id": 1,
+      "name": "Fresh Cow Milk",
+      "description": "Pure and fresh cow milk, pasteurized",
+      "icon": "🥛",
+      "price": 60,
+      "unit": "litre",
+      "category": "milk",
+      "inStock": true
+    },
+    {
+      "id": 2,
+      "name": "Buffalo Milk",
+      "description": "Rich and creamy buffalo milk",
+      "icon": "🐃",
+      "price": 70,
+      "unit": "litre",
+      "category": "milk",
+      "inStock": true
+    },
+    {
+      "id": 3,
+      "name": "Standardized Milk",
+      "description": "Milk with standardized fat content",
+      "icon": "📊",
+      "price": 55,
+      "unit": "litre",
+      "category": "milk",
+      "inStock": true
+    },
+    {
+      "id": 4,
+      "name": "Fresh Curd",
+      "description": "Homemade style fresh curd",
+      "icon": "🍶",
+      "price": 40,
+      "unit": "500g",
+      "category": "curd",
+      "inStock": true
+    },
+    {
+      "id": 5,
+      "name": "Fresh Paneer",
+      "description": "Soft and fresh cottage cheese",
+      "icon": "🧀",
+      "price": 200,
+      "unit": "kg",
+      "category": "paneer",
+      "inStock": true
+    },
+    {
+      "id": 6,
+      "name": "Pure Ghee",
+      "description": "Traditional clarified butter",
+      "icon": "🫕",
+      "price": 500,
+      "unit": "500g",
+      "category": "ghee",
+      "inStock": true
     }
   ],
-  "customers": [
+  "categories": [
     {
-      "id": "cust_1",
-      "name": "Customer One",
-      "email": "customer@akshaya.com",
-      "phone": "9999999999",
-      "agencyId": "agency_1",
-      "package": "1L",
-      "planDurationDays": 30
+      "id": "milk",
+      "name": "Milk",
+      "description": "Various types of fresh milk"
+    },
+    {
+      "id": "curd",
+      "name": "Curd",
+      "description": "Fresh dairy curd products"
+    },
+    {
+      "id": "paneer",
+      "name": "Paneer",
+      "description": "Fresh cottage cheese"
+    },
+    {
+      "id": "ghee",
+      "name": "Ghee",
+      "description": "Pure clarified butter"
     }
-  ],
-  "subscriptions": [
-    { "agencyId": "agency_1", "plan": "Monthly", "price": 2000 }
-  ],
-  "deliveries": {
-    "agency_1": {}
-  }
+  ]
 }
