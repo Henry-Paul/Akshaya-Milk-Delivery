@@ -927,3 +927,23 @@ body {
         flex-direction: column;
     }
 }
+
+/* Make app cards obviously clickable */
+.app-card {
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.app-card:active {
+    transform: scale(0.95);
+}
+
+/* Add a subtle pulse animation to attract attention */
+@keyframes subtle-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+}
+
+.app-card {
+    animation: subtle-pulse 3s ease-in-out infinite;
+}
