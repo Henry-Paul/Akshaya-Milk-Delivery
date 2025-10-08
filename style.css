@@ -1,195 +1,45 @@
-/* Complete CSS with all styles */
-:root {
-    --primary: #10b981;
-    --primary-dark: #059669;
-    --primary-light: #34d399;
-    --secondary: #3b82f6;
-    --danger: #ef4444;
-    --warning: #f59e0b;
-    --success: #10b981;
-    --gray-50: #f9fafb;
-    --gray-100: #f3f4f6;
-    --gray-200: #e5e7eb;
-    --gray-300: #d1d5db;
-    --gray-400: #9ca3af;
-    --gray-500: #6b7280;
-    --gray-600: #4b5563;
-    --gray-700: #374151;
-    --gray-800: #1f2937;
-    --gray-900: #111827;
+:root{
+  --brand: #1976d2;
+  --bg: #f8fafc;
+  --card: #fff;
+  --muted: #666;
+  --gap: 12px;
+  --max-width: 1100px;
 }
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Inter', sans-serif;
-    background: var(--gray-50);
-    color: var(--gray-800);
-}
-
-.hidden {
-    display: none !important;
-}
-
-/* Loading Screen */
-.loading-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-}
-
-.loading-content {
-    text-align: center;
-    color: white;
-}
-
-.milk-loader {
-    position: relative;
-    width: 80px;
-    height: 80px;
-    margin: 0 auto 2rem;
-}
-
-.milk-loader .fa-cow {
-    font-size: 3rem;
-    color: white;
-    animation: bounce 2s infinite;
-}
-
-@keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
-    40% {transform: translateY(-10px);}
-    60% {transform: translateY(-5px);}
-}
-
-/* Auth Screen */
-.auth-screen {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.auth-container {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-    padding: 3rem;
-    width: 100%;
-    max-width: 480px;
-}
-
-/* Add all other CSS styles from previous implementation */
-/* ... (Include all the CSS from the previous response) ... */
-
-/* Stats Grid */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-.stat-card {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    transition: transform 0.2s;
-}
-
-.stat-card:hover {
-    transform: translateY(-2px);
-}
-
-.stat-icon {
-    width: 60px;
-    height: 60px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    color: white;
-}
-
-.stat-icon.revenue { background: var(--success); }
-.stat-icon.agencies { background: var(--secondary); }
-.stat-icon.customers { background: var(--primary); }
-.stat-icon.conversion { background: var(--warning); }
-.stat-icon.delivery { background: var(--success); }
-.stat-icon.pending { background: var(--warning); }
-.stat-icon.amount { background: var(--primary); }
-.stat-icon.packets { background: var(--secondary); }
-
-/* Quick Actions */
-.quick-actions {
-    margin-bottom: 2rem;
-}
-
-.action-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-}
-
-.action-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 1.5rem 1rem;
-    background: white;
-    border: 1px solid var(--gray-200);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: center;
-}
-
-.action-btn:hover {
-    border-color: var(--primary);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
-
-/* Sections */
-.section {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    padding: 2rem;
-    margin-bottom: 2rem;
-}
-
-/* Add responsive design */
-@media (max-width: 768px) {
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .action-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .auth-container {
-        padding: 2rem;
-        margin: 1rem;
-    }
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;color:#111;background:var(--bg)}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:linear-gradient(90deg,var(--brand),#0b63b7);color:white}
+.brand{display:flex;align-items:center;gap:10px}
+.brand img{width:40px;height:40px;border-radius:8px}
+.brand h1{font-size:1.05rem;margin:0}
+.topbar nav{display:flex;gap:8px;align-items:center}
+button,select,input{font:inherit}
+a{color:inherit;text-decoration:underline}
+main{max-width:var(--max-width);margin:18px auto;padding:0 16px}
+.card{background:var(--card);padding:12px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.05);margin-bottom:12px}
+.row{display:flex;flex-wrap:wrap;gap:var(--gap)}
+.w-40{flex:1 1 40%}
+.w-60{flex:1 1 58%}
+.w-30{flex:1 1 30%}
+.w-70{flex:1 1 68%}
+.hidden{display:none}
+h2{margin-top:0}
+label{display:block;margin:8px 0}
+input[type="text"],input[type="email"],input[type="password"],select{width:100%;padding:8px;border-radius:6px;border:1px solid #ddd}
+button{background:var(--brand);color:white;border:none;padding:8px 12px;border-radius:6px;cursor:pointer}
+button:disabled{opacity:0.6}
+.muted{color:var(--muted)}
+.sr-only{position:absolute;left:-9999px}
+.topbar select, .topbar button{padding:6px 8px;border-radius:6px;border:none}
+.portal .card h3{margin-top:0}
+#deliveryCalendar{display:flex;flex-wrap:wrap;gap:8px}
+.day{width:56px;height:56px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-direction:column;border:1px solid #eee}
+.day button{padding:4px 6px;border-radius:4px}
+.map{height:240px;background:linear-gradient(180deg,#e9f2ff,#fff);display:flex;align-items:center;justify-content:center;border-radius:8px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;z-index:50}
+.modal-content{width:90%;max-width:520px;background:white;padding:12px;border-radius:8px;position:relative}
+.close{position:absolute;top:8px;right:8px;background:transparent;color:#333;border:none;font-size:18px}
+footer{margin:18px 0;text-align:center;color:var(--muted)}
+@media(min-width:900px){
+  .map{height:320px}
 }
