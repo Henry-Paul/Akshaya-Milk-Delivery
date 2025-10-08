@@ -1,12 +1,14 @@
 {
   "name": "Akshaya Milk Delivery",
   "short_name": "Akshaya Milk",
-  "description": "Fresh milk and dairy products delivered to your doorstep",
+  "description": "Fresh milk and dairy products delivered to your doorstep daily",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#FD9139",
+  "background_color": "#FFFFFF",
+  "theme_color": "#FC8019",
   "orientation": "portrait-primary",
+  "scope": "/",
+  "categories": ["food", "shopping", "lifestyle"],
   "icons": [
     {
       "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥛</text></svg>",
@@ -19,6 +21,26 @@
       "type": "image/svg+xml"
     }
   ],
-  "categories": ["food", "shopping"],
-  "lang": "en-US"
+  "screenshots": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='384' height='512' viewBox='0 0 384 512'><rect width='384' height='512' fill='%23FC8019'/><text x='192' y='256' font-family='Arial' font-size='48' text-anchor='middle' fill='white'>Akshaya Milk</text></svg>",
+      "sizes": "384x512",
+      "type": "image/svg+xml",
+      "form_factor": "narrow"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Order Milk",
+      "short_name": "Order",
+      "description": "Quickly order your daily milk",
+      "url": "/?source=shortcut_order",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%23FC8019' d='M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 5.5V7H9V5.5L3 7V9L9 8.5V10L5 11V13L9 12.5V22H15V12.5L19 13V11L15 10V8.5L21 9Z'/></svg>",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ]
 }
