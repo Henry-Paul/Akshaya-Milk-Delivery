@@ -1,367 +1,550 @@
-/**
- * app.js
- * Akshaya Milk Delivery - client-only PWA demo
- * No real keys. Replace placeholders before production.
- */
+// Sample product data
+const products = [
+    {
+        id: 1,
+        name: "Fresh Cow Milk",
+        description: "Pure and fresh cow milk, pasteurized",
+        icon: "🥛",
+        price: 60,
+        unit: "litre",
+        category: "milk"
+    },
+    {
+        id: 2,
+        name: "Buffalo Milk",
+        description: "Rich and creamy buffalo milk",
+        icon: "🐃",
+        price: 70,
+        unit: "litre",
+        category: "milk"
+    },
+    {
+        id: 3,
+        name: "Standardized Milk",
+        description: "Milk with standardized fat content",
+        icon: "📊",
+        price: 55,
+        unit: "litre",
+        category: "milk"
+    },
+    {
+        id: 4,
+        name: "Fresh Curd",
+        description: "Homemade style fresh curd",
+        icon: "🍶",
+        price: 40,
+        unit: "500g",
+        category: "curd"
+    },
+    {
+        id: 5,
+        name: "Fresh Paneer",
+        description: "Soft and fresh cottage cheese",
+        icon: "🧀",
+        price: 200,
+        unit: "kg",
+        category: "paneer"
+    },
+    {
+        id: 6,
+        name: "Pure Ghee",
+        description: "Traditional clarified butter",
+        icon: "🫕",
+        price: 500,
+        unit: "500g",
+        category: "ghee"
+    },
+    {
+        id: 7,
+        name: "Flavored Milk",
+        description: "Chocolate and strawberry flavors",
+        icon: "🍫",
+        price: 30,
+        unit: "200ml",
+        category: "milk"
+    },
+    {
+        id: 8,
+        name: "Low Fat Milk",
+        description: "Perfect for weight watchers",
+        icon: "⚖️",
+        price: 50,
+        unit: "litre",
+        category: "milk"
+    }
+];
 
-/* =============== CONFIG =============== */
-const CONFIG = {
-  SAMPLE_KEY: 'akshaya_sample_loaded_v1',
-  LS_PREFIX: 'akshaya_',
-  PLACEHOLDER_UPI: 'UPI_PLACEHOLDER@ybl',
-  GOOGLE_MAPS_API_KEY: '<GOOGLE_MAPS_API_KEY>',
-  REPO_URL: 'https://github.com/<your-username>/Akshaya-Milk-Delivery'
+// App State
+let state = {
+    cart: [],
+    currentProduct: null,
+    currentQuantity: 1
 };
 
-/* =============== UTIL =============== */
-const $ = s => document.querySelector(s);
-const $all = s => Array.from(document.querySelectorAll(s));
-const lsKey = k => CONFIG.LS_PREFIX + k;
-const now = () => new Date().toISOString();
-
-/* =============== SAMPLE DATA LOADING =============== */
-async function loadSampleDataOnce() {
-  if (localStorage.getItem(CONFIG.SAMPLE_KEY)) return;
-  try {
-    const res = await fetch('/sample-data.json');
-    const data = await res.json();
-    // store samples namespaced
-    localStorage.setItem(lsKey('agencies'), JSON.stringify(data.agencies));
-    localStorage.setItem(lsKey('customers'), JSON.stringify(data.customers));
-    localStorage.setItem(lsKey('payments'), JSON.stringify([]));
-    localStorage.setItem(lsKey('deliveries'), JSON.stringify(data.deliveries || {}));
-    localStorage.setItem(lsKey('subscriptions'), JSON.stringify(data.subscriptions || []));
-    localStorage.setItem(CONFIG.SAMPLE_KEY, '1');
-    console.log('Sample data loaded');
-  } catch (e) {
-    console.warn('Could not load sample-data.json', e);
-  }
-}
-
-/* =============== AUTH / SESSION =============== */
-const Session = {
-  current: null,
-  login(role, email) {
-    const session = { role, email, startedAt: now() };
-    localStorage.setItem(lsKey('session'), JSON.stringify(session));
-    this.current = session;
-    renderForRole(role);
-  },
-  logout() {
-    localStorage.removeItem(lsKey('session'));
-    this.current = null;
-    renderForRole(null);
-  },
-  restore() {
-    const s = localStorage.getItem(lsKey('session'));
-    if (s) this.current = JSON.parse(s);
-  }
+// DOM Elements
+const elements = {
+    productsGrid: document.getElementById('productsGrid'),
+    cartSidebar: document.getElementById('cartSidebar'),
+    cartItems: document.getElementById('cartItems'),
+    cartCount: document.getElementById('cartCount'),
+    cartTotal: document.getElementById('cartTotal'),
+    cartBtn: document.getElementById('cartBtn'),
+    closeCart: document.getElementById('closeCart'),
+    checkoutBtn: document.getElementById('checkoutBtn'),
+    productModal: document.getElementById('productModal'),
+    closeModal: document.getElementById('closeModal'),
+    modalProductName: document.getElementById('modalProductName'),
+    modalProductIcon: document.getElementById('modalProductIcon'),
+    modalProductDesc: document.getElementById('modalProductDesc'),
+    modalProductPrice: document.getElementById('modalProductPrice'),
+    modalProductUnit: document.getElementById('modalProductUnit'),
+    decreaseQty: document.getElementById('decreaseQty'),
+    increaseQty: document.getElementById('increaseQty'),
+    currentQty: document.getElementById('currentQty'),
+    addToCartModal: document.getElementById('addToCartModal'),
+    searchInput: document.getElementById('searchInput'),
+    filterBtn: document.getElementById('filterBtn'),
+    offlineIndicator: document.getElementById('offlineIndicator'),
+    exploreBtn: document.getElementById('exploreBtn')
 };
 
-/* =============== DATA HELPERS =============== */
-function getAgencies() {
-  return JSON.parse(localStorage.getItem(lsKey('agencies')) || '[]');
-}
-function saveAgencies(a){ localStorage.setItem(lsKey('agencies'), JSON.stringify(a)); }
-function getCustomers(){ return JSON.parse(localStorage.getItem(lsKey('customers')) || '[]'); }
-function saveCustomers(c){ localStorage.setItem(lsKey('customers'), JSON.stringify(c)); }
-function getPayments(){ return JSON.parse(localStorage.getItem(lsKey('payments')) || '[]'); }
-function savePayments(p){ localStorage.setItem(lsKey('payments'), JSON.stringify(p)); }
-function getDeliveries(){ return JSON.parse(localStorage.getItem(lsKey('deliveries')) || '{}'); }
-function saveDeliveries(d){ localStorage.setItem(lsKey('deliveries'), JSON.stringify(d)); }
-function getSubscriptions(){ return JSON.parse(localStorage.getItem(lsKey('subscriptions')) || '[]'); }
-function saveSubscriptions(s){ localStorage.setItem(lsKey('subscriptions'), JSON.stringify(s)); }
-
-/* =============== UI RENDERING =============== */
-function hideAllPortals(){ $all('.portal').forEach(el=>el.classList.add('hidden')); $('#loginSection').classList.remove('hidden'); }
-function renderForRole(role) {
-  hideAllPortals();
-  if (!role) return;
-  $('#loginSection').classList.add('hidden');
-  if (role === 'owner') {
-    $('#ownerPortal').classList.remove('hidden');
-    renderOwner();
-  } else if (role === 'agency') {
-    $('#agencyPortal').classList.remove('hidden');
-    renderAgency();
-  } else if (role === 'customer') {
-    $('#customerPortal').classList.remove('hidden');
-    renderCustomer();
-  }
+// Initialize App
+function initApp() {
+    renderProducts();
+    setupEventListeners();
+    checkOnlineStatus();
+    loadCartFromStorage();
 }
 
-/* OWNER */
-function renderOwner(){
-  const agencies = getAgencies();
-  const payments = getPayments();
-  const totalRevenue = payments.reduce((s,p)=>s + (p.amount||0),0);
-  $('#ownerRevenue').textContent = `₹${totalRevenue}`;
-  $('#agencyList').innerHTML = agencies.map(a => {
-    const html = `<div class="card"><h4>${escapeHtml(a.businessName)}</h4>
-      <div>Agency email: ${escapeHtml(a.email)}</div>
-      <div>Customers: ${a.customers?.length || 0}</div>
-      <div>Subscription: ${a.plan || 'free'}</div>
-    </div>`;
-    return html;
-  }).join('');
-  const subs = getSubscriptions();
-  $('#ownerSubs').textContent = `Plans: ${subs.length}`;
-  $('#ownerAnalytics').textContent = JSON.stringify({
-    totalAgencies: agencies.length,
-    totalCustomers: getCustomers().length,
-    totalRevenue,
-    sampleDate: new Date().toLocaleString()
-  }, null, 2);
-}
-
-/* AGENCY */
-function renderAgency(){
-  const agencies = getAgencies();
-  const agency = agencies[0] || agencies.find(a => a.email === 'agency@akshaya.com') || null;
-  if (!agency) {
-    $('#agencyPanel').innerHTML = '<div class="muted">No agency found in sample data.</div>';
-    return;
-  }
-  // apply brand
-  applyBrand(agency);
-  $('#businessName').value = agency.businessName || '';
-  $('#brandColor').value = agency.brandColor || '#1976d2';
-  $('#logoUrl').value = agency.logo || '';
-
-  // trial badge
-  const trialRemaining = computeTrialRemaining(agency);
-  $('#trialBadge').innerHTML = trialRemaining > 0 ? `<div class="muted">Trial: ${trialRemaining} day(s) remaining. <a href="${buildWaLink('','Hello, my trial status')}" target="_blank">Notify via WhatsApp</a></div>` : `<div class="muted">Trial expired</div>`;
-
-  // customers
-  const customers = getCustomers().filter(c => c.agencyId === agency.id);
-  $('#customersList').innerHTML = customers.map(c => `<div class="card"><strong>${escapeHtml(c.name)}</strong><div>${escapeHtml(c.phone)}</div></div>`).join('') || '<div class="muted">No customers yet</div>';
-
-  // delivery calendar (simple - 7 days)
-  renderDeliveryCalendarForAgency(agency);
-}
-
-function computeTrialRemaining(agency){
-  if (!agency || !agency.trialStarts) return 0;
-  const start = new Date(agency.trialStarts);
-  const days = 5;
-  const end = new Date(start.getTime() + days*24*60*60*1000);
-  const diff = Math.ceil((end - new Date()) / (24*60*60*1000));
-  return Math.max(0, diff);
-}
-
-function applyBrand(agency){
-  if (!agency) return;
-  document.documentElement.style.setProperty('--brand', agency.brandColor || '#1976d2');
-  $('#brandLogo').src = agency.logo || '/icons/icon-192.png';
-  $('#brandTitle').textContent = agency.businessName || 'Akshaya Milk Delivery';
-}
-
-/* Customer */
-function renderCustomer(){
-  const customers = getCustomers();
-  const cust = customers.find(c => c.email === 'customer@akshaya.com') || customers[0];
-  if (!cust) {
-    $('#customerSub').innerHTML = '<div class="muted">No customer in sample data.</div>';
-    return;
-  }
-  $('#customerSub').innerHTML = `<div>${escapeHtml(cust.name)} - ${escapeHtml(cust.package || '500ml')}</div>`;
-  const history = getDeliveries()[cust.id] || [];
-  $('#customerHistory').innerHTML = history.length ? history.map(h => `<div>${h.date} - ${h.status}</div>`).join('') : '<div class="muted">No deliveries yet</div>';
-  // map
-  initMap('mapContainer', CONFIG.GOOGLE_MAPS_API_KEY);
-}
-
-/* Delivery calendar rendering */
-function renderDeliveryCalendarForAgency(agency){
-  const cal = $('#deliveryCalendar');
-  cal.innerHTML = '';
-  const today = new Date();
-  for (let i=0;i<14;i++){
-    const d = new Date(today.getFullYear(), today.getMonth(), today.getDate()+i);
-    const key = formatDate(d);
-    const deliveries = getDeliveries();
-    const status = deliveries[agency.id] && deliveries[agency.id][key] ? deliveries[agency.id][key].status : 'pending';
-    const el = document.createElement('div');
-    el.className = 'day card';
-    el.innerHTML = `<div>${d.getDate()}/${d.getMonth()+1}</div><div><button data-day="${key}">${status==='done'?'✓':'Mark'}</button></div>`;
-    el.querySelector('button').addEventListener('click', ()=> {
-      markDelivery(agency.id, key);
-      renderDeliveryCalendarForAgency(agency);
-      renderAgency(); // refresh revenue info
+// Render Products
+function renderProducts(filteredProducts = products) {
+    elements.productsGrid.innerHTML = '';
+    
+    filteredProducts.forEach(product => {
+        const productCard = createProductCard(product);
+        elements.productsGrid.appendChild(productCard);
     });
-    cal.appendChild(el);
-  }
 }
 
-/* Mark delivery for agency */
-function markDelivery(agencyId, dayKey){
-  const deliveries = getDeliveries();
-  deliveries[agencyId] = deliveries[agencyId] || {};
-  deliveries[agencyId][dayKey] = { status: 'done', recordedAt: now() };
-  // increment payment/revenue: assume ₹30 per packet x 1
-  const payments = getPayments();
-  payments.push({ id: 'pay_' + Date.now(), agencyId, amount: 30, method: 'cash', date: now(), note: 'auto-delivery' });
-  savePayments(payments);
-  saveDeliveries(deliveries);
-}
-
-/* Payments (mock) */
-function mockPay(paymentInfo){
-  // PaymentInfo: {agencyId, customerId, amount, method}
-  const payments = getPayments();
-  payments.push({ ...paymentInfo, id: 'pay_'+Date.now(), date: now() });
-  savePayments(payments);
-  return true;
-}
-
-/* WhatsApp helper */
-function buildWaLink(phone, text){
-  // phone optional. wa.me requires country code - left to user
-  const body = encodeURIComponent(text || 'Hello from Akshaya!');
-  if (phone) return `https://wa.me/${phone}?text=${body}`;
-  return `https://wa.me/?text=${body}`;
-}
-
-/* MAPS: placeholder */
-function initMap(containerId, apiKey){
-  const container = document.getElementById(containerId);
-  const fallback = $('#mapFallback');
-  if (!apiKey || apiKey.includes('<')) {
-    container.style.display = 'none';
-    fallback.textContent = 'Google Maps key not set. To enable maps, add GOOGLE_MAPS_API_KEY to app config. (This demo shows a placeholder.)';
-    return;
-  }
-  // If key present, try to inject script and initialize (very light)
-  const scriptId = 'gmapjs';
-  if (document.getElementById(scriptId)) {
-    fallback.textContent = '';
-    return;
-  }
-  const s = document.createElement('script');
-  s.id = scriptId;
-  s.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=__initAkshayaMap`;
-  s.async = true;
-  window.__initAkshayaMap = () => {
-    const map = new google.maps.Map(document.getElementById(containerId), { center: {lat:12.97,lng:77.59}, zoom:12 });
-    new google.maps.Marker({ position: {lat:12.97,lng:77.59}, map });
-  };
-  document.head.appendChild(s);
-}
-
-/* =============== UTILITIES =============== */
-function formatDate(d){ return d.toISOString().slice(0,10); }
-function escapeHtml(str=''){ return String(str).replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])); }
-
-/* =============== UI EVENTS =============== */
-function wireEvents(){
-  // role switcher
-  $('#roleSelect').addEventListener('change', e => {
-    const role = e.target.value;
-    Session.login(role, `${role}@akshaya.com`);
-  });
-
-  $('#btnLoginDemo').addEventListener('click', ()=> {
-    const role = $('#roleSelect').value;
-    // demo credentials as required:
-    if (role === 'owner') Session.login('owner', 'owner@akshaya.com');
-    if (role === 'agency') Session.login('agency', 'agency@akshaya.com');
-    if (role === 'customer') Session.login('customer', 'customer@akshaya.com');
-  });
-
-  $('#loginForm').addEventListener('submit', (ev)=>{
-    ev.preventDefault();
-    const email = $('#email').value;
-    const pw = $('#password').value;
-    // simple demo acceptance
-    if (!email) return alert('Enter email');
-    const role = email.includes('owner') ? 'owner' : email.includes('agency') ? 'agency' : 'customer';
-    Session.login(role, email);
-  });
-
-  $('#saveBrand').addEventListener('click', ()=>{
-    const agencies = getAgencies();
-    const agency = agencies[0];
-    if (!agency) return alert('No agency to update');
-    agency.businessName = $('#businessName').value || agency.businessName;
-    agency.brandColor = $('#brandColor').value || agency.brandColor;
-    agency.logo = $('#logoUrl').value || agency.logo;
-    saveAgencies(agencies);
-    applyBrand(agency);
-    alert('Brand updated (saved to localStorage)');
-  });
-
-  $('#btnAddCustomer').addEventListener('click', ()=>{
-    showModal(`<h3>Add Customer</h3>
-      <label>Name <input id="m_name"></label>
-      <label>Phone <input id="m_phone"></label>
-      <button id="m_save">Save</button>`);
-    $('#m_save').addEventListener('click', ()=>{
-      const name = $('#m_name').value; const phone = $('#m_phone').value;
-      if (!name) return alert('Enter name');
-      const customers = getCustomers();
-      const agencies = getAgencies();
-      const agency = agencies[0];
-      const c = { id: 'cust_' + Date.now(), name, phone, email: `${name.replace(/\s/g,'').toLowerCase()}@example.com`, agencyId: agency.id, package: '500ml' };
-      customers.push(c); saveCustomers(customers);
-      closeModal();
-      renderAgency();
+// Create Product Card
+function createProductCard(product) {
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    card.innerHTML = `
+        <div class="product-header">
+            <div class="product-icon">${product.icon}</div>
+            <div class="product-info">
+                <h3>${product.name}</h3>
+                <p class="description">${product.description}</p>
+            </div>
+        </div>
+        <div class="product-footer">
+            <div class="price-info">
+                <span class="price">₹${product.price}</span>
+                <span class="unit">/${product.unit}</span>
+            </div>
+            <button class="add-btn" data-product-id="${product.id}">
+                Add
+            </button>
+        </div>
+    `;
+    
+    // Add event listeners
+    const addBtn = card.querySelector('.add-btn');
+    addBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        addToCart(product.id, 1);
     });
-  });
-
-  $('#btnPlaceOrder').addEventListener('click', ()=>{
-    showModal(`<h3>Mock Payment</h3><p>Amount: ₹30</p><p>UPI: ${escapeHtml(CONFIG.PLACEHOLDER_UPI)}</p><button id="payNow">Pay (Mock)</button>`);
-    $('#payNow').addEventListener('click', ()=>{
-      const payments = { agencyId: getAgencies()[0].id, customerId: getCustomers()[0].id, amount: 30, method: 'UPI', note: 'mock' };
-      mockPay(payments);
-      alert('Payment recorded (mock).');
-      closeModal();
-      renderCustomer();
+    
+    card.addEventListener('click', () => {
+        openProductModal(product);
     });
-  });
-
-  // modal close
-  $('#modalClose').addEventListener('click', closeModal);
-  $('#modal').addEventListener('click', (e)=> { if (e.target === $('#modal')) closeModal(); });
-
-  // repo link set
-  document.querySelectorAll('#repoLink,#repoLink2').forEach(a => a.href = CONFIG.REPO_URL);
+    
+    return card;
 }
 
-/* Modal helpers */
-function showModal(html) {
-  $('#modalBody').innerHTML = html;
-  $('#modal').classList.remove('hidden');
-}
-function closeModal(){ $('#modal').classList.add('hidden'); $('#modalBody').innerHTML = ''; }
-
-/* =============== PWA: service worker registration =============== */
-function registerSW(){
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').then(reg => {
-      console.log('SW registered', reg);
-    }).catch(err => console.warn('SW reg failed', err));
-  }
-}
-
-/* =============== INIT =============== */
-async function init(){
-  await loadSampleDataOnce();
-  Session.restore();
-  wireEvents();
-  // Restore UI for session
-  if (Session.current) {
-    renderForRole(Session.current.role);
-  } else {
-    $('#roleSelect').value = 'owner';
-    hideAllPortals();
-  }
-  // try to register service worker
-  registerSW();
+// Open Product Modal
+function openProductModal(product) {
+    state.currentProduct = product;
+    state.currentQuantity = 1;
+    
+    elements.modalProductName.textContent = product.name;
+    elements.modalProductIcon.textContent = product.icon;
+    elements.modalProductDesc.textContent = product.description;
+    elements.modalProductPrice.textContent = product.price;
+    elements.modalProductUnit.textContent = `/${product.unit}`;
+    elements.currentQty.textContent = state.currentQuantity;
+    
+    elements.productModal.classList.add('show');
 }
 
-init();
-window.renderForRole = renderForRole; // expose for debugging
-window.buildWaLink = buildWaLink;
+// Close Product Modal
+function closeProductModal() {
+    elements.productModal.classList.remove('show');
+    state.currentProduct = null;
+    state.currentQuantity = 1;
+}
 
-/* =============== SMALL SANITY HELPERS =============== */
-console.log('Akshaya PWA demo loaded. Demo credentials: owner@akshaya.com, agency@akshaya.com, customer@akshaya.com (any password).');
+// Add to Cart
+function addToCart(productId, quantity = 1) {
+    const product = products.find(p => p.id === productId);
+    if (!product) return;
+    
+    const existingItem = state.cart.find(item => item.product.id === productId);
+    
+    if (existingItem) {
+        existingItem.quantity += quantity;
+    } else {
+        state.cart.push({
+            product: product,
+            quantity: quantity,
+            schedule: 'once'
+        });
+    }
+    
+    updateCartUI();
+    saveCartToStorage();
+    showNotification(`${product.name} added to cart!`);
+}
+
+// Remove from Cart
+function removeFromCart(productId) {
+    state.cart = state.cart.filter(item => item.product.id !== productId);
+    updateCartUI();
+    saveCartToStorage();
+}
+
+// Update Cart Quantity
+function updateCartQuantity(productId, newQuantity) {
+    const item = state.cart.find(item => item.product.id === productId);
+    if (item) {
+        if (newQuantity <= 0) {
+            removeFromCart(productId);
+        } else {
+            item.quantity = newQuantity;
+        }
+    }
+    updateCartUI();
+    saveCartToStorage();
+}
+
+// Update Cart UI
+function updateCartUI() {
+    // Update cart items
+    elements.cartItems.innerHTML = '';
+    
+    if (state.cart.length === 0) {
+        elements.cartItems.innerHTML = '<p style="text-align: center; color: var(--text-light);">Your cart is empty</p>';
+    } else {
+        state.cart.forEach(item => {
+            const cartItem = document.createElement('div');
+            cartItem.className = 'cart-item';
+            cartItem.innerHTML = `
+                <div class="cart-item-info">
+                    <h4>${item.product.name}</h4>
+                    <div class="cart-item-price">₹${item.product.price * item.quantity}</div>
+                </div>
+                <div class="cart-item-actions">
+                    <button class="qty-btn decrease" data-product-id="${item.product.id}">-</button>
+                    <span class="qty-value">${item.quantity}</span>
+                    <button class="qty-btn increase" data-product-id="${item.product.id}">+</button>
+                    <button class="remove-btn" data-product-id="${item.product.id}">🗑️</button>
+                </div>
+            `;
+            elements.cartItems.appendChild(cartItem);
+        });
+    }
+    
+    // Update cart count and total
+    const totalCount = state.cart.reduce((sum, item) => sum + item.quantity, 0);
+    const totalPrice = state.cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+    
+    elements.cartCount.textContent = totalCount;
+    elements.cartTotal.textContent = totalPrice;
+}
+
+// Setup Event Listeners
+function setupEventListeners() {
+    // Cart functionality
+    elements.cartBtn.addEventListener('click', () => {
+        elements.cartSidebar.classList.add('open');
+    });
+    
+    elements.closeCart.addEventListener('click', () => {
+        elements.cartSidebar.classList.remove('open');
+    });
+    
+    elements.checkoutBtn.addEventListener('click', proceedToCheckout);
+    
+    // Modal functionality
+    elements.closeModal.addEventListener('click', closeProductModal);
+    
+    elements.decreaseQty.addEventListener('click', () => {
+        if (state.currentQuantity > 1) {
+            state.currentQuantity--;
+            elements.currentQty.textContent = state.currentQuantity;
+        }
+    });
+    
+    elements.increaseQty.addEventListener('click', () => {
+        state.currentQuantity++;
+        elements.currentQty.textContent = state.currentQuantity;
+    });
+    
+    elements.addToCartModal.addEventListener('click', () => {
+        if (state.currentProduct) {
+            addToCart(state.currentProduct.id, state.currentQuantity);
+            closeProductModal();
+        }
+    });
+    
+    // Search functionality
+    elements.searchInput.addEventListener('input', handleSearch);
+    elements.filterBtn.addEventListener('click', showFilterOptions);
+    
+    // Explore button
+    elements.exploreBtn.addEventListener('click', () => {
+        document.querySelector('.products').scrollIntoView({ 
+            behavior: 'smooth' 
+        });
+    });
+    
+    // Category cards
+    document.querySelectorAll('.category-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const category = card.dataset.category;
+            filterByCategory(category);
+        });
+    });
+    
+    // Navigation
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            const page = item.dataset.page;
+            navigateToPage(page);
+        });
+    });
+    
+    // Online/offline detection
+    window.addEventListener('online', () => {
+        elements.offlineIndicator.classList.remove('show');
+        showNotification('Back online!');
+    });
+    
+    window.addEventListener('offline', () => {
+        elements.offlineIndicator.classList.add('show');
+        showNotification('You are offline. Some features may not work.');
+    });
+    
+    // Close modal on outside click
+    elements.productModal.addEventListener('click', (e) => {
+        if (e.target === elements.productModal) {
+            closeProductModal();
+        }
+    });
+}
+
+// Handle Search
+function handleSearch() {
+    const searchTerm = elements.searchInput.value.toLowerCase().trim();
+    
+    if (searchTerm === '') {
+        renderProducts();
+        return;
+    }
+    
+    const filteredProducts = products.filter(product => 
+        product.name.toLowerCase().includes(searchTerm) ||
+        product.description.toLowerCase().includes(searchTerm) ||
+        product.category.toLowerCase().includes(searchTerm)
+    );
+    
+    renderProducts(filteredProducts);
+}
+
+// Filter by Category
+function filterByCategory(category) {
+    const filteredProducts = products.filter(product => 
+        product.category === category
+    );
+    
+    renderProducts(filteredProducts);
+    
+    // Update UI to show active filter
+    document.querySelectorAll('.category-card').forEach(card => {
+        card.style.opacity = card.dataset.category === category ? '1' : '0.6';
+    });
+}
+
+// Show Filter Options
+function showFilterOptions() {
+    // Simple filter implementation - can be enhanced
+    const priceRanges = [
+        { min: 0, max: 50, label: 'Under ₹50' },
+        { min: 50, max: 100, label: '₹50 - ₹100' },
+        { min: 100, max: Infinity, label: 'Above ₹100' }
+    ];
+    
+    const selectedRange = prompt(
+        'Filter by price:\n1. Under ₹50\n2. ₹50 - ₹100\n3. Above ₹100\n\nEnter choice (1-3):'
+    );
+    
+    if (selectedRange && ['1', '2', '3'].includes(selectedRange)) {
+        const range = priceRanges[parseInt(selectedRange) - 1];
+        const filteredProducts = products.filter(product => 
+            product.price >= range.min && product.price <= range.max
+        );
+        renderProducts(filteredProducts);
+    }
+}
+
+// Navigate to Page
+function navigateToPage(page) {
+    // Update active nav item
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    document.querySelector(`[data-page="${page}"]`).classList.add('active');
+    
+    // Simple page navigation - can be enhanced with proper routing
+    showNotification(`Navigating to ${page} page...`);
+    
+    // For demo purposes, just show a message
+    if (page === 'orders') {
+        alert('Orders page would show your order history here.');
+    } else if (page === 'subscriptions') {
+        alert('Subscriptions page would manage your milk subscriptions here.');
+    } else if (page === 'profile') {
+        alert('Profile page would show your account details here.');
+    }
+}
+
+// Proceed to Checkout
+function proceedToCheckout() {
+    if (state.cart.length === 0) {
+        alert('Your cart is empty!');
+        return;
+    }
+    
+    const total = state.cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+    
+    // Simple checkout simulation
+    const address = prompt('Enter delivery address:');
+    if (address) {
+        const orderId = 'ORD' + Date.now();
+        alert(`Order placed successfully!\nOrder ID: ${orderId}\nTotal: ₹${total}\nDelivery to: ${address}\n\nThank you for choosing Akshaya Milk!`);
+        
+        // Clear cart
+        state.cart = [];
+        updateCartUI();
+        saveCartToStorage();
+        elements.cartSidebar.classList.remove('open');
+    }
+}
+
+// Show Notification
+function showNotification(message) {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--primary-color);
+        color: white;
+        padding: 12px 20px;
+        border-radius: var(--border-radius-sm);
+        box-shadow: var(--shadow-lg);
+        z-index: 1003;
+        transform: translateX(400px);
+        transition: transform 0.3s ease;
+    `;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.style.transform = 'translateX(400px)';
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 3000);
+}
+
+// Check Online Status
+function checkOnlineStatus() {
+    if (!navigator.onLine) {
+        elements.offlineIndicator.classList.add('show');
+    }
+}
+
+// Save Cart to Local Storage
+function saveCartToStorage() {
+    try {
+        localStorage.setItem('akshayaCart', JSON.stringify(state.cart));
+    } catch (e) {
+        console.warn('Could not save cart to localStorage:', e);
+    }
+}
+
+// Load Cart from Local Storage
+function loadCartFromStorage() {
+    try {
+        const savedCart = localStorage.getItem('akshayaCart');
+        if (savedCart) {
+            state.cart = JSON.parse(savedCart);
+            updateCartUI();
+        }
+    } catch (e) {
+        console.warn('Could not load cart from localStorage:', e);
+    }
+}
+
+// Service Worker Registration
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+                console.log('SW registered: ', registration);
+            })
+            .catch((registrationError) => {
+                console.log('SW registration failed: ', registrationError);
+            });
+    });
+}
+
+// Initialize app when DOM is loaded
+document.addEventListener('DOMContentLoaded', initApp);
+
+// Handle cart item actions (delegated events)
+document.addEventListener('click', (e) => {
+    // Handle quantity changes in cart
+    if (e.target.classList.contains('decrease')) {
+        const productId = parseInt(e.target.dataset.productId);
+        const item = state.cart.find(item => item.product.id === productId);
+        if (item) {
+            updateCartQuantity(productId, item.quantity - 1);
+        }
+    }
+    
+    if (e.target.classList.contains('increase')) {
+        const productId = parseInt(e.target.dataset.productId);
+        const item = state.cart.find(item => item.product.id === productId);
+        if (item) {
+            updateCartQuantity(productId, item.quantity + 1);
+        }
+    }
+    
+    // Handle remove from cart
+    if (e.target.classList.contains('remove-btn')) {
+        const productId = parseInt(e.target.dataset.productId);
+        removeFromCart(productId);
+    }
+});
