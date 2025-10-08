@@ -7,17 +7,30 @@ class CustomerApp {
             currentView: 'home',
             selectedCategory: 'all'
         };
+        this.initialized = false;
     }
 
     initialize() {
+        if (this.initialized) return;
+        
+        console.log('🛒 Initializing Customer App...');
+        
         this.loadProducts();
         this.loadCartFromStorage();
         this.renderCustomerApp();
         this.setupEventListeners();
+        
+        this.initialized = true;
+        console.log('✅ Customer App initialized successfully');
     }
 
     renderCustomerApp() {
         const appContainer = document.getElementById('customerApp');
+        if (!appContainer) {
+            console.error('❌ Customer app container not found');
+            return;
+        }
+
         appContainer.innerHTML = `
             <div class="customer-app">
                 <header class="customer-header">
@@ -29,35 +42,52 @@ class CustomerApp {
                         <div class="customer-actions">
                             <button class="icon-btn" onclick="customerApp.showCart()">
                                 <span class="material-icons">shopping_cart</span>
-                                ${this.state.cart.length > 0 ? `<span class="cart-badge">${this.getTotalCartItems()}</span>` : ''}
+                                ${this.state.cart.length > 0 ? 
+                                    `<span class="cart-badge">${this.getTotalCartItems()}</span>` : 
+                                    ''}
                             </button>
                         </div>
                     </nav>
                 </header>
 
                 <main class="customer-main">
-                    ${this.state.currentView === 'home' ? this.renderHome() : ''}
-                    ${this.state.currentView === 'cart' ? this.renderCart() : ''}
-                    ${this.state.currentView === 'orders' ? this.renderOrders() : ''}
-                    ${this.state.currentView === 'profile' ? this.renderProfile() : ''}
+                    ${this.renderCurrentView()}
                 </main>
 
                 <nav class="bottom-nav">
-                    <button class="nav-item ${this.state.currentView === 'home' ? 'active' : ''}" onclick="customerApp.showView('home')">
+                    <button class="nav-item ${this.state.currentView === 'home' ? 'active' : ''}" 
+                            onclick="customerApp.showView('home')">
                         <span class="material-icons">home</span>
                         <span class="nav-label">Home</span>
                     </button>
-                    <button class="nav-item ${this.state.currentView === 'orders' ? 'active' : ''}" onclick="customerApp.showView('orders')">
+                    <button class="nav-item ${this.state.currentView === 'orders' ? 'active' : ''}" 
+                            onclick="customerApp.showView('orders')">
                         <span class="material-icons">receipt</span>
                         <span class="nav-label">Orders</span>
                     </button>
-                    <button class="nav-item ${this.state.currentView === 'profile' ? 'active' : ''}" onclick="customerApp.showView('profile')">
+                    <button class="nav-item ${this.state.currentView === 'profile' ? 'active' : ''}" 
+                            onclick="customerApp.showView('profile')">
                         <span class="material-icons">person</span>
                         <span class="nav-label">Profile</span>
                     </button>
                 </nav>
             </div>
         `;
+    }
+
+    renderCurrentView() {
+        switch (this.state.currentView) {
+            case 'home':
+                return this.renderHome();
+            case 'cart':
+                return this.renderCart();
+            case 'orders':
+                return this.renderOrders();
+            case 'profile':
+                return this.renderProfile();
+            default:
+                return this.renderHome();
+        }
     }
 
     renderHome() {
@@ -68,7 +98,8 @@ class CustomerApp {
         return `
             <section class="search-section">
                 <div class="search-bar">
-                    <input type="text" placeholder="Search milk, curd, paneer..." id="searchInput">
+                    <input type="text" placeholder="Search milk, curd, paneer..." 
+                           id="searchInput" oninput="customerApp.handleSearch(this.value)">
                     <button class="btn-primary" onclick="customerApp.handleSearch()">
                         <span class="material-icons">search</span>
                         Search
@@ -78,19 +109,23 @@ class CustomerApp {
 
             <section class="categories-section">
                 <div class="categories-scroll">
-                    <div class="category-item ${this.state.selectedCategory === 'all' ? 'active' : ''}" onclick="customerApp.filterCategory('all')">
+                    <div class="category-item ${this.state.selectedCategory === 'all' ? 'active' : ''}" 
+                         onclick="customerApp.filterCategory('all')">
                         <span>🥛</span>
                         <span>All</span>
                     </div>
-                    <div class="category-item ${this.state.selectedCategory === 'milk' ? 'active' : ''}" onclick="customerApp.filterCategory('milk')">
+                    <div class="category-item ${this.state.selectedCategory === 'milk' ? 'active' : ''}" 
+                         onclick="customerApp.filterCategory('milk')">
                         <span>🐄</span>
                         <span>Milk</span>
                     </div>
-                    <div class="category-item ${this.state.selectedCategory === 'curd' ? 'active' : ''}" onclick="customerApp.filterCategory('curd')">
+                    <div class="category-item ${this.state.selectedCategory === 'curd' ? 'active' : ''}" 
+                         onclick="customerApp.filterCategory('curd')">
                         <span>🍶</span>
                         <span>Curd</span>
                     </div>
-                    <div class="category-item ${this.state.selectedCategory === 'paneer' ? 'active' : ''}" onclick="customerApp.filterCategory('paneer')">
+                    <div class="category-item ${this.state.selectedCategory === 'paneer' ? 'active' : ''}" 
+                         onclick="customerApp.filterCategory('paneer')">
                         <span>🧀</span>
                         <span>Paneer</span>
                     </div>
@@ -99,30 +134,39 @@ class CustomerApp {
 
             <section class="products-section">
                 <h2 class="section-title">Fresh Dairy Products</h2>
-                <div class="products-grid">
-                    ${filteredProducts.map(product => `
-                        <div class="product-card" onclick="customerApp.showProductDetail(${product.id})">
-                            ${product.popular ? '<div class="product-badge">Popular</div>' : ''}
-                            <div class="product-image">
-                                <span class="emoji">${product.icon}</span>
-                            </div>
-                            <div class="product-info">
-                                <h3>${product.name}</h3>
-                                <p class="product-description">${product.description}</p>
-                                <div class="product-price">
-                                    <span class="current-price">₹${product.price}</span>
-                                    ${product.originalPrice ? `<span class="original-price">₹${product.originalPrice}</span>` : ''}
-                                    ${product.discount ? `<span class="discount">${product.discount}% OFF</span>` : ''}
-                                </div>
-                            </div>
-                            <button class="add-to-cart-btn" onclick="event.stopPropagation(); customerApp.addToCart(${product.id})">
-                                <span class="material-icons">add</span>
-                                Add to Cart
-                            </button>
-                        </div>
-                    `).join('')}
+                <div class="products-grid" id="productsGrid">
+                    ${filteredProducts.length > 0 ? 
+                        filteredProducts.map(product => this.renderProductCard(product)).join('') :
+                        '<div class="empty-state"><span class="material-icons">search_off</span><h3>No products found</h3></div>'
+                    }
                 </div>
             </section>
+        `;
+    }
+
+    renderProductCard(product) {
+        return `
+            <div class="product-card" onclick="customerApp.showProductDetail(${product.id})">
+                ${product.popular ? '<div class="product-badge">Popular</div>' : ''}
+                <div class="product-image">
+                    <span class="emoji">${product.icon}</span>
+                </div>
+                <div class="product-info">
+                    <h3>${product.name}</h3>
+                    <p class="product-description">${product.description}</p>
+                    <div class="product-price">
+                        <span class="current-price">₹${product.price}</span>
+                        ${product.originalPrice ? 
+                            `<span class="original-price">₹${product.originalPrice}</span>` : ''}
+                        ${product.discount ? 
+                            `<span class="discount">${product.discount}% OFF</span>` : ''}
+                    </div>
+                </div>
+                <button class="add-to-cart-btn" onclick="event.stopPropagation(); customerApp.addToCart(${product.id})">
+                    <span class="material-icons">add</span>
+                    Add to Cart
+                </button>
+            </div>
         `;
     }
 
@@ -157,10 +201,14 @@ class CustomerApp {
                                 <div class="cart-item-price">₹${item.product.price * item.quantity}</div>
                             </div>
                             <div class="cart-item-controls">
-                                <button class="quantity-btn" onclick="customerApp.updateQuantity(${item.product.id}, ${item.quantity - 1})">-</button>
-                                <span>${item.quantity}</span>
-                                <button class="quantity-btn" onclick="customerApp.updateQuantity(${item.product.id}, ${item.quantity + 1})">+</button>
-                                <button class="quantity-btn" onclick="customerApp.removeFromCart(${item.product.id})">
+                                <button class="quantity-btn" onclick="customerApp.updateQuantity(${item.product.id}, ${item.quantity - 1})">
+                                    <span class="material-icons">remove</span>
+                                </button>
+                                <span class="quantity-display">${item.quantity}</span>
+                                <button class="quantity-btn" onclick="customerApp.updateQuantity(${item.product.id}, ${item.quantity + 1})">
+                                    <span class="material-icons">add</span>
+                                </button>
+                                <button class="quantity-btn delete-btn" onclick="customerApp.removeFromCart(${item.product.id})">
                                     <span class="material-icons">delete</span>
                                 </button>
                             </div>
@@ -194,6 +242,9 @@ class CustomerApp {
                 <span class="material-icons">receipt</span>
                 <h3>No orders yet</h3>
                 <p>Your order history will appear here</p>
+                <button class="btn-primary" onclick="customerApp.showView('home')">
+                    Start Shopping
+                </button>
             </div>
         `;
     }
@@ -214,7 +265,7 @@ class CustomerApp {
                     <label>Delivery Address</label>
                     <input type="text" value="123 Main Street, Bangalore" placeholder="Enter your address">
                 </div>
-                <button class="btn-primary">
+                <button class="btn-primary" onclick="customerApp.saveProfile()">
                     Save Changes
                 </button>
             </div>
@@ -252,7 +303,7 @@ class CustomerApp {
 
         this.saveCartToStorage();
         this.renderCustomerApp();
-        this.showNotification(`${product.name} added to cart!`);
+        this.showNotification(`✅ ${product.name} added to cart!`);
     }
 
     updateQuantity(productId, newQuantity) {
@@ -270,10 +321,13 @@ class CustomerApp {
     }
 
     removeFromCart(productId) {
-        this.state.cart = this.state.cart.filter(item => item.product.id !== productId);
-        this.saveCartToStorage();
-        this.renderCustomerApp();
-        this.showNotification('Item removed from cart');
+        const item = this.state.cart.find(item => item.product.id === productId);
+        if (item) {
+            this.state.cart = this.state.cart.filter(item => item.product.id !== productId);
+            this.saveCartToStorage();
+            this.renderCustomerApp();
+            this.showNotification(`🗑️ ${item.product.name} removed from cart`);
+        }
     }
 
     getTotalCartItems() {
@@ -282,13 +336,13 @@ class CustomerApp {
 
     checkout() {
         if (this.state.cart.length === 0) {
-            this.showNotification('Your cart is empty!', 'error');
+            this.showNotification('❌ Your cart is empty!', 'error');
             return;
         }
 
         const total = this.state.cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
         
-        this.showNotification(`Order placed successfully! Total: ₹${total}`);
+        this.showNotification(`✅ Order placed successfully! Total: ₹${total}`);
         this.state.cart = [];
         this.saveCartToStorage();
         this.showView('home');
@@ -333,56 +387,110 @@ class CustomerApp {
                 icon: "🧀",
                 price: 200,
                 category: "paneer"
+            },
+            {
+                id: 5,
+                name: "Pure Ghee",
+                description: "Traditional clarified butter for authentic taste",
+                icon: "🫕",
+                price: 500,
+                category: "ghee"
             }
         ];
     }
 
     saveCartToStorage() {
-        localStorage.setItem('customerCart', JSON.stringify(this.state.cart));
+        try {
+            localStorage.setItem('customerCart', JSON.stringify(this.state.cart));
+        } catch (error) {
+            console.error('Error saving cart:', error);
+        }
     }
 
     loadCartFromStorage() {
-        const savedCart = localStorage.getItem('customerCart');
-        if (savedCart) {
-            this.state.cart = JSON.parse(savedCart);
+        try {
+            const savedCart = localStorage.getItem('customerCart');
+            if (savedCart) {
+                this.state.cart = JSON.parse(savedCart);
+            }
+        } catch (error) {
+            console.error('Error loading cart:', error);
         }
     }
 
     showNotification(message, type = 'success') {
-        // Simple notification implementation
-        alert(message);
+        // Create a simple notification
+        const notification = document.createElement('div');
+        notification.textContent = message;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${type === 'success' ? '#4CAF50' : '#f44336'};
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            z-index: 1000;
+            font-weight: 500;
+        `;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 3000);
     }
 
     setupEventListeners() {
-        // Search functionality
-        const searchInput = document.getElementById('searchInput');
-        if (searchInput) {
-            searchInput.addEventListener('input', (e) => {
-                this.handleSearch(e.target.value);
-            });
-        }
+        // Event listeners are handled inline in the HTML for simplicity
     }
 
     handleSearch(query = '') {
         const searchInput = document.getElementById('searchInput');
-        if (searchInput) {
+        if (searchInput && !query) {
             query = searchInput.value;
         }
 
-        // Simple search implementation
-        console.log('Searching for:', query);
+        if (!query.trim()) {
+            this.renderCustomerApp();
+            return;
+        }
+
+        const filteredProducts = this.state.products.filter(product =>
+            product.name.toLowerCase().includes(query.toLowerCase()) ||
+            product.description.toLowerCase().includes(query.toLowerCase()) ||
+            product.category.toLowerCase().includes(query.toLowerCase())
+        );
+
+        const productsGrid = document.getElementById('productsGrid');
+        if (productsGrid) {
+            productsGrid.innerHTML = filteredProducts.length > 0 ? 
+                filteredProducts.map(product => this.renderProductCard(product)).join('') :
+                '<div class="empty-state"><span class="material-icons">search_off</span><h3>No products found</h3></div>';
+        }
     }
 
     showProductDetail(productId) {
         const product = this.state.products.find(p => p.id === productId);
         if (product) {
-            this.showNotification(`Showing details for ${product.name}`);
+            this.showNotification(`📱 Showing details for ${product.name}`);
+            // In a real app, you would show a modal with product details
         }
+    }
+
+    saveProfile() {
+        this.showNotification('✅ Profile saved successfully!');
     }
 }
 
 // Initialize customer app
 const customerApp = new CustomerApp();
+
 function initializeCustomerApp() {
+    console.log('🛒 Initializing Customer App...');
     customerApp.initialize();
 }
+
+// Make globally available
+window.customerApp = customerApp;
+window.initializeCustomerApp = initializeCustomerApp;
